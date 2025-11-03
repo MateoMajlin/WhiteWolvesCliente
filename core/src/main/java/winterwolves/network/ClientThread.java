@@ -2,11 +2,12 @@ package winterwolves.network;
 
 import java.io.IOException;
 import java.net.*;
+import com.badlogic.gdx.Gdx;
 
 public class ClientThread extends Thread {
     private DatagramSocket socket;
     private int serverPort = 5555;
-    private String ipServerStr = "255.255.255.255";
+    private String ipServerStr = "255.255.255.255"; // broadcast o IP fija de tu server
     private InetAddress ipServer;
     private boolean end = false;
     private GameController gameController;
@@ -29,7 +30,7 @@ public class ClientThread extends Thread {
                 socket.receive(packet);
                 processMessage(packet);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (!end) e.printStackTrace();
             }
         } while (!end);
     }
@@ -38,24 +39,41 @@ public class ClientThread extends Thread {
         String message = (new String(packet.getData())).trim();
         String[] parts = message.split(":");
 
-        System.out.println("Mensaje recibido: " + message);
+        System.out.println("Mensaje recibido del servidor: " + message);
 
         switch (parts[0]) {
             case "AlreadyConnected":
-                System.out.println("Ya estas conectado");
+                System.out.println("Ya estás conectado");
                 break;
-            case "Connected":
-                System.out.println("Conectado al servidor");
-                this.ipServer = packet.getAddress();
-                gameController.connect(Integer.parseInt(parts[1]));
-                break;
+
             case "Full":
                 System.out.println("Servidor lleno");
                 this.end = true;
                 break;
-            case "Start":
-                this.gameController.start();
+
+            case "Connected":
+                this.ipServer = packet.getAddress();
+                int playerNum = Integer.parseInt(parts[1]);
+                gameController.connect(playerNum); // Asigna numPlayer antes de Start
                 break;
+
+            case "Start":
+                if (parts.length > 1) {
+                    String[] pjs = parts[1].split(",");
+                    int[] personajesElegidos = new int[pjs.length];
+                    for (int i = 0; i < pjs.length; i++) {
+                        personajesElegidos[i] = Integer.parseInt(pjs[i]);
+                    }
+
+                    System.out.println("Iniciando partida con personajes: " + parts[1]);
+
+                    // Ejecutar en hilo principal
+                    Gdx.app.postRunnable(() -> {
+                        gameController.start(personajesElegidos);
+                    });
+                }
+                break;
+
         }
     }
 

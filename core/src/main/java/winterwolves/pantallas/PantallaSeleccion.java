@@ -19,18 +19,14 @@ public class PantallaSeleccion implements Screen {
     private Texto eleccion;
     private Texto pjElegido;
     private int seleccion = 0;
-    ShapeRenderer[] personajesCasillas;
+    private ShapeRenderer[] personajesCasillas;
     private final int CANT_PJS = 3;
     private final int casillaAncho = 200;
     private final int casillaAlto = 500;
-    private int i = 0;
-    public int[] personajesElegidosIdx;
-    private int personajesElegidos = 0;
-    private boolean partidaIniciada = false;
-    private float tiempoEspera = 0f;
-    private boolean esperando = false;
-    private boolean mostrarMensajeInicio = false;
 
+    public int personaje;
+    private boolean personajeElegido = false;
+    private boolean partidaIniciada = false;
 
     @Override
     public void show() {
@@ -41,14 +37,13 @@ public class PantallaSeleccion implements Screen {
         personajesImg[2] = new Imagen("gatoEleccion.png");
 
         eleccion = new Texto(Recursos.FUENTEMENU, 50, Color.WHITE, true);
-        pjElegido = new Texto(Recursos.FUENTEMENU,30,Color.WHITE,true);
+        pjElegido = new Texto(Recursos.FUENTEMENU, 30, Color.WHITE, true);
 
         personajesCasillas = new ShapeRenderer[CANT_PJS];
         for (int i = 0; i < CANT_PJS; i++) {
             personajesCasillas[i] = new ShapeRenderer();
         }
 
-        personajesElegidosIdx = new int[2];
         eleccion.setTexto("Elija a su personaje");
         pjElegido.setTexto(" ");
     }
@@ -59,9 +54,8 @@ public class PantallaSeleccion implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         fondo.escalar(Config.WIDTH, Config.HEIGTH);
-        eleccion.setPosition((Config.WIDTH / 2f) - (eleccion.getAncho())/2, Config.HEIGTH - 50);
-
-        pjElegido.setPosition((Config.WIDTH / 2f) - (pjElegido.getAncho()/2), 50);
+        eleccion.setPosition((Config.WIDTH / 2f) - (eleccion.getAncho()) / 2, Config.HEIGTH - 50);
+        pjElegido.setPosition((Config.WIDTH / 2f) - (pjElegido.getAncho() / 2), 50);
 
         Render.batch.begin();
         fondo.dibujar();
@@ -70,35 +64,9 @@ public class PantallaSeleccion implements Screen {
         Render.batch.end();
 
         dibujarCasillas();
-
         actualizar();
         elegirPersonaje();
         iniciarPartida();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
     }
 
     private void dibujarCasillas() {
@@ -131,37 +99,27 @@ public class PantallaSeleccion implements Screen {
     }
 
     public void elegirPersonaje() {
-        String[] elegido = {"Guerrero","Mago","Clerigo"};
+        String[] elegido = {"Guerrero", "Mago", "Clérigo"};
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            if (personajesElegidos < 2) {
-                personajesElegidosIdx[personajesElegidos] = seleccion;
-                personajesElegidos++;
-                pjElegido.setTexto("Personaje Elegido Por Jugador " + personajesElegidos + ": " + elegido[seleccion]);
+            if (!personajeElegido) {
+                personaje = seleccion;
+                personajeElegido = true;
+                pjElegido.setTexto("Personaje elegido: " + elegido[seleccion]);
             }
         }
     }
 
     private void iniciarPartida() {
-        if (!partidaIniciada && personajesElegidos == 2) {
+        if (!partidaIniciada && personajeElegido) {
             partidaIniciada = true;
-            esperando = true;
-            tiempoEspera = 0f;
-        }
-
-        if (esperando) {
-            tiempoEspera += Gdx.graphics.getDeltaTime();
-
-            if (tiempoEspera >= 1f && !mostrarMensajeInicio) {
-                mostrarMensajeInicio = true;
-                pjElegido.setTexto("¡Empezando la partida!");
-                pjElegido.setPosition((Config.WIDTH / 2f) - (pjElegido.getAncho() / 2), 50);
-            }
-
-            if (tiempoEspera >= 3f) {
-                esperando = false;
-                Render.app.setScreen(new MapaNieve(personajesElegidosIdx));
-            }
+            pjElegido.setTexto("Conectando al servidor...");
+            Render.app.setScreen(new MapaNieve(personaje));
         }
     }
 
+    @Override public void resize(int width, int height) {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {}
 }

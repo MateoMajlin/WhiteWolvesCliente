@@ -19,8 +19,8 @@ public class Guerrero extends Personaje {
     Item amuleto = new AmuletoCuracion();
     Item anillo = new AnilloConcentracion();
 
-    public Guerrero(World world, EntradasJugador entradas, float x, float y, float ppm, OrthographicCamera camera) {
-        super(world, entradas, x, y, ppm, camera);
+    public Guerrero(World world, float x, float y, float ppm, OrthographicCamera camera) {
+        super(world, x, y, ppm, camera);
         nombreClase = "Guerrero";
 
         armaBasica = espada.crearArma(world,ppm);

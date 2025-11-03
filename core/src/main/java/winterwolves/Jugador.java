@@ -20,20 +20,22 @@ public class Jugador {
     private OrthographicCamera camaraHud;
     private World world;
     private float ppm;
+    private int id;
 
     private String nombre;
+    public EntradasJugador entradasJugador;
 
-    public Jugador(String nombre, World world, EntradasJugador entradas, float x, float y, float ppm, OrthographicCamera camaraHud, Personaje personaje) {
+    public Jugador(String nombre, World world, float x, float y, float ppm, OrthographicCamera camaraHud, Personaje personaje, int id) {
         this.nombre = nombre;
         this.world = world;
-        this.entradas = entradas;
         this.ppm = ppm;
         this.camaraHud = camaraHud;
-
+        this.entradas = new EntradasJugador();
         this.personaje = personaje;
-
+        this.personaje.entradas = this.entradas;
         this.hud = personaje.hud;
         this.inventarioHud = personaje.inventarioHud;
+        this.id = id;
     }
 
     public void update() {

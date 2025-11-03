@@ -19,6 +19,8 @@ import winterwolves.elementos.Texto;
 import winterwolves.items.AmuletoCuracion;
 import winterwolves.items.EspadaItem;
 import winterwolves.items.GemaElectrica;
+import winterwolves.network.ClientThread;
+import winterwolves.network.GameController;
 import winterwolves.props.Caja;
 import winterwolves.props.Cofre;
 import winterwolves.props.CofreHud;
@@ -30,7 +32,7 @@ import winterwolves.utilidades.Recursos;
 import winterwolves.utilidades.Box2DColisiones;
 import winterwolves.utilidades.CollisionListener;
 
-public class MapaNieve implements Screen {
+public class MapaNieve implements Screen, GameController {
 
     private TiledMap mapa;
     private OrthogonalTiledMapRenderer renderer;
@@ -56,6 +58,10 @@ public class MapaNieve implements Screen {
 
     private Partida partida;
     private int[] personajesElegidosIdx;
+
+    public ClientThread clientThread;
+    public int numPlayer = 0;
+    public final int NUM_PLAYERS = 2;
 
     public MapaNieve(int[] personajesElegidosIdx) {
         this.personajesElegidosIdx = personajesElegidosIdx;
@@ -83,17 +89,24 @@ public class MapaNieve implements Screen {
         Box2DColisiones.crearCuerposColisiones(mapa, world, "Colisiones", PPM, 2f, 2f);
         debugRenderer = new Box2DDebugRenderer();
 
+        clientThread = new ClientThread(this);
+        clientThread.start();
+        clientThread.sendMessage("Connect");
+
         playerManager = new PlayerManager(world, personajesElegidosIdx, PPM, cameraManager.getHud());
-        playerManager.getJugador1().getPersonaje().setVida(50);
+        for (int i = 0; i < NUM_PLAYERS; i++) {
+            playerManager.getJugador(i).getPersonaje().entradas = playerManager.getJugador(i).getEntradas();
+        }
 
-        partida = new Partida(playerManager.getJugador1().getNombre(), playerManager.getJugador1().getPersonaje(),
-            playerManager.getJugador2().getNombre(), playerManager.getJugador2().getPersonaje(),
-            60f);
+        playerManager.getJugador(0).getPersonaje().setVida(50);
 
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(playerManager.getJugador1().getEntradas());
-        multiplexer.addProcessor(playerManager.getJugador2().getEntradas());
-        Gdx.input.setInputProcessor(multiplexer);
+        partida = new Partida(
+            playerManager.getJugador(0).getNombre(), playerManager.getJugador(0).getPersonaje(),
+            playerManager.getJugador(1).getNombre(), playerManager.getJugador(1).getPersonaje(),
+            120f
+        );
+
+        Gdx.input.setInputProcessor(playerManager.getJugador(0).getEntradas());
 
         cajas = new Array<>();
         cajas.add(new Caja(world, 500 / PPM, 700 / PPM, PPM, 100));
@@ -107,7 +120,6 @@ public class MapaNieve implements Screen {
         cofre.getInventario().agregarItem(new AmuletoCuracion());
         cofre.getInventario().agregarItem(new GemaElectrica());
 
-        // Texto "Ganaste"
         ganaste = new Texto(Recursos.FUENTEMENU, 150, Color.BLACK, true);
         ganaste.setTexto("Ganaste");
         ganaste.setPosition(centroMapaX - ganaste.getAncho() / 2f,
@@ -129,22 +141,16 @@ public class MapaNieve implements Screen {
             }
         }
 
-        // Actualizar partida
         partida.actualizar(delta);
 
-        System.out.println(playerManager.getJugador2().getPersonaje().getVida());
-        System.out.println(playerManager.getJugador2().getPersonaje().getVidaMax());
-        // Actualizar jugadores
         playerManager.actualizar(delta);
 
-        // Actualizar cámara
-        cameraManager.seguir(playerManager.getPosicionJugador1());
+        cameraManager.seguir(playerManager.getPosicionJugador(0));
 
-        // Renderizar mapa
         renderer.setView(cameraManager.getPrincipal());
         renderer.render(capasFondo);
 
-        // Dibujar jugadores y cajas
+
         Render.batch.setProjectionMatrix(cameraManager.getPrincipal().combined);
         Render.batch.begin();
         playerManager.draw(Render.batch);
@@ -161,23 +167,22 @@ public class MapaNieve implements Screen {
 
         // Interacciones
         if (!partida.isPartidaFinalizada()) {
-
             // Intercambiar items
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-                playerManager.getJugador1().getPersonaje().intercambiarItems(new AmuletoCuracion(), 1);
+                playerManager.getJugador(0).getPersonaje().intercambiarItems(new AmuletoCuracion(), 1);
             }
 
             // Abrir cofre
-            if (cofre.estaCerca(playerManager.getPosicionJugador1(), 50)
+            if (cofre.estaCerca(playerManager.getPosicionJugador(0), 50)
                 && Gdx.input.isKeyJustPressed(Input.Keys.E)) {
                 if (hudCofre == null)
-                    hudCofre = new CofreHud(cofre.getInventario(), playerManager.getJugador1().getPersonaje(), cameraManager.getHud());
+                    hudCofre = new CofreHud(cofre.getInventario(), playerManager.getJugador(0).getPersonaje(), cameraManager.getHud());
                 hudCofre.toggle();
             }
 
             // Abrir inventario
             if (Gdx.input.isKeyJustPressed(Input.Keys.I) && (hudCofre == null || !hudCofre.isVisible())) {
-                playerManager.getJugador1().toggleInventario();
+                playerManager.getJugador(0).toggleInventario();
             }
         }
 
@@ -230,5 +235,15 @@ public class MapaNieve implements Screen {
         for (Caja c : cajas) {
             c.dispose();
         }
+    }
+
+    @Override
+    public void connect(int numPlayer) {
+        this.numPlayer = numPlayer;
+    }
+
+    @Override
+    public void start() {
+
     }
 }

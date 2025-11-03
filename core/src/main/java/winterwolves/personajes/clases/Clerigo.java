@@ -22,8 +22,8 @@ public class Clerigo extends Personaje{
     Item amuleto = new AmuletoCuracion();
     Item gemaRayo = new GemaElectrica();
 
-    public Clerigo(World world, EntradasJugador entradas, float x, float y, float ppm, OrthographicCamera camera) {
-        super(world, entradas, x, y, ppm, camera);
+    public Clerigo(World world, float x, float y, float ppm, OrthographicCamera camera) {
+        super(world, x, y, ppm, camera);
 
         nombreClase = "Clerigo";
 

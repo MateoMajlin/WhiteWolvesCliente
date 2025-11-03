@@ -19,7 +19,6 @@ import winterwolves.personajes.armas.Arma;
 public class Personaje extends Sprite implements Hudeable, Dañable {
 
     public Body body;
-    protected EntradasJugador entradas;
     protected float speedBase = 2.5f;
     protected float speed = speedBase;
     protected float multiplicadorCorrer = 1.7f;
@@ -53,10 +52,10 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public InventarioHud inventarioHud;
     public Hud hud;
     protected OrthographicCamera camaraHud;
+    public EntradasJugador entradas;
 
-    public Personaje(World world, EntradasJugador entradas, float x, float y, float ppm, OrthographicCamera camaraHud) {
+    public Personaje(World world, float x, float y, float ppm, OrthographicCamera camaraHud) {
         this.world = world;
-        this.entradas = entradas;
         this.inventario = new Inventario();
         this.ppm = ppm;
         this.animaciones = new AnimacionPersonaje("zorrito.png");
@@ -64,6 +63,7 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         this.camaraHud = camaraHud;
         this.hud = new Hud(this,camaraHud);
         this.inventarioHud = new InventarioHud(this.inventario, camaraHud);
+        EntradasJugador entradas;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -148,7 +148,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             armaBasica.draw(batch, armaX, armaY, getWidth(), getHeight(), direccionMirando.angleDeg());
         }
 
-        // Dibujar habilidades
         if (habilidad1 != null) habilidad1.dibujar(batch, getX(), getY(), getWidth(), getHeight());
         if (habilidad2 != null) habilidad2.dibujar(batch, getX(), getY(), getWidth(), getHeight());
     }

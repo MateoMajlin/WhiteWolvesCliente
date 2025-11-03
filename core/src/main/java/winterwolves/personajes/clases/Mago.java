@@ -20,8 +20,8 @@ public class Mago extends Personaje {
     Item gemaDeFuego = new GemaDeFuego();
     Item gemaElectrica = new GemaElectrica();
 
-    public Mago(World world, EntradasJugador entradas, float x, float y, float ppm, OrthographicCamera camera) {
-        super(world, entradas, x, y, ppm, camera);
+    public Mago(World world, float x, float y, float ppm, OrthographicCamera camera) {
+        super(world, x, y, ppm, camera);
         nombreClase = "Mago";
 
         animaciones = new AnimacionPersonaje("pajarito.png");

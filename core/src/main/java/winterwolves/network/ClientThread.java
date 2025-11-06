@@ -3,6 +3,8 @@ package winterwolves.network;
 import java.io.IOException;
 import java.net.*;
 import com.badlogic.gdx.Gdx;
+import winterwolves.Jugador;
+import winterwolves.personajes.Personaje;
 
 public class ClientThread extends Thread {
 
@@ -81,7 +83,29 @@ public class ClientThread extends Thread {
                 }
                 break;
 
-            case "Move":
+            case "Move": // mensaje del servidor
+                if (parts.length < 4) return; // seguridad
+
+                try {
+                    int playerId = Integer.parseInt(parts[1]);
+                    float dx = Float.parseFloat(parts[2]);
+                    float dy = Float.parseFloat(parts[3]);
+
+                    Gdx.app.postRunnable(() -> {
+                        if (gameController.getPlayerManager() == null) return;
+                        Jugador jugador = gameController.getPlayerManager().getJugador(playerId);
+                        if (jugador == null) return;
+                        Personaje p = jugador.getPersonaje();
+                        if (p == null) return;
+
+
+                        p.setX(p.getX() + dx);
+                        p.setY(p.getY() + dy);
+                    });
+
+                } catch (NumberFormatException e) {
+                    System.err.println("[Cliente] Error al parsear MOVE: " + message);
+                }
                 break;
         }
     }

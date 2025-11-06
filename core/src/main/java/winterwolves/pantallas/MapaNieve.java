@@ -139,6 +139,10 @@ public class MapaNieve implements Screen, GameController {
         );
     }
 
+    @Override
+    public PlayerManager getPlayerManager() {
+        return playerManager;
+    }
 
 
     @Override
@@ -195,21 +199,22 @@ public class MapaNieve implements Screen, GameController {
         debugRenderer.render(world, cameraManager.getBox2D().combined);
     }
 
-    public void update(){
+    public void update() {
         Jugador jugadorLocal = playerManager.getJugador(numPlayer);
-        if(jugadorLocal.getEntradas().isArriba()){
-            clientThread.sendMessage("MOVE:ARRIBA:" + numPlayer);
-        }
-        if(jugadorLocal.getEntradas().isAbajo()){
-            clientThread.sendMessage("MOVE:ABAJO" + numPlayer);
-        }
-        if(jugadorLocal.getEntradas().isIzquierda()){
-            clientThread.sendMessage("MOVE:IZQUIERDA" + numPlayer);
-        }
-        if(jugadorLocal.getEntradas().isDerecha()){
-            clientThread.sendMessage("MOVE:DERECHA" + numPlayer);
+        float dx = 0, dy = 0;
+        float speed = 2.5f; // o la velocidad que uses
+
+        if (jugadorLocal.getEntradas().isArriba()) dy = speed;
+        if (jugadorLocal.getEntradas().isAbajo()) dy = -speed;
+        if (jugadorLocal.getEntradas().isIzquierda()) dx = -speed;
+        if (jugadorLocal.getEntradas().isDerecha()) dx = speed;
+
+        if (dx != 0 || dy != 0) {
+            String message = "MOVE:" + numPlayer + ":" + dx + ":" + dy;
+            clientThread.sendMessage(message);
         }
     }
+
 
     @Override
     public void resize(int width, int height) { cameraManager.resize(width, height); }

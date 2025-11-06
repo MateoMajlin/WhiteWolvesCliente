@@ -20,6 +20,8 @@ import winterwolves.network.GameController;
 import winterwolves.props.*;
 import winterwolves.utilidades.*;
 
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+
 public class MapaNieve implements Screen, GameController {
 
     private TiledMap mapa;
@@ -146,6 +148,7 @@ public class MapaNieve implements Screen, GameController {
         Render.limpiarPantalla(1, 1, 1);
         world.step(delta, 6, 2);
 
+        update();
         for (int i = cajas.size - 1; i >= 0; i--) {
             Caja c = cajas.get(i);
             if (c.isMarcadaParaDestruir()) {
@@ -190,6 +193,22 @@ public class MapaNieve implements Screen, GameController {
         Render.batch.end();
 
         debugRenderer.render(world, cameraManager.getBox2D().combined);
+    }
+
+    public void update(){
+        Jugador jugadorLocal = playerManager.getJugador(numPlayer);
+        if(jugadorLocal.getEntradas().isArriba()){
+            clientThread.sendMessage("MOVE:ARRIBA:" + numPlayer);
+        }
+        if(jugadorLocal.getEntradas().isAbajo()){
+            clientThread.sendMessage("MOVE:ABAJO" + numPlayer);
+        }
+        if(jugadorLocal.getEntradas().isIzquierda()){
+            clientThread.sendMessage("MOVE:IZQUIERDA" + numPlayer);
+        }
+        if(jugadorLocal.getEntradas().isDerecha()){
+            clientThread.sendMessage("MOVE:DERECHA" + numPlayer);
+        }
     }
 
     @Override

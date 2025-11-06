@@ -192,18 +192,6 @@ public class MapaNieve implements Screen, GameController {
         debugRenderer.render(world, cameraManager.getBox2D().combined);
     }
 
-
-    @Override
-    public void updatePlayerState(int playerId, float x, float y, float velX, float velY, int dir) {
-        if (playerManager == null) return;
-        Jugador jugador = playerManager.getJugador(playerId);
-        if (jugador == null || jugador.getPersonaje() == null) return;
-
-        jugador.getPersonaje().setPosicion(x, y);
-        jugador.getPersonaje().setVelocidad(velX, velY);
-        jugador.getPersonaje().setDireccion(dir);
-    }
-
     @Override
     public void resize(int width, int height) { cameraManager.resize(width, height); }
     @Override public void pause() {}

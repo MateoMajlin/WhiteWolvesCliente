@@ -82,16 +82,6 @@ public class ClientThread extends Thread {
                 break;
 
             case "Move":
-                // Formato: Move:<playerId>:<x>:<y>:<velX>:<velY>:<dir>
-                if (parts.length >= 7) {
-                    int playerId = Integer.parseInt(parts[1]);
-                    float x = Float.parseFloat(parts[2]);
-                    float y = Float.parseFloat(parts[3]);
-                    float velX = Float.parseFloat(parts[4]);
-                    float velY = Float.parseFloat(parts[5]);
-                    int dir = Integer.parseInt(parts[6]);
-                    Gdx.app.postRunnable(() -> gameController.updatePlayerState(playerId, x, y, velX, velY, dir));
-                }
                 break;
         }
     }

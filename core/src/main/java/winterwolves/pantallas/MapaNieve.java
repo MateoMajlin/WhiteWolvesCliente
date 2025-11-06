@@ -1,7 +1,6 @@
 package winterwolves.pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+
 import winterwolves.Jugador;
 import winterwolves.Partida;
 import winterwolves.elementos.Texto;
@@ -43,11 +43,13 @@ public class MapaNieve implements Screen, GameController {
     private Texto ganaste;
 
     private Partida partida;
-    private int personaje; // índice elegido por este cliente
+    private int personaje;
 
     public ClientThread clientThread;
     public int numPlayer = -1;
     public final int NUM_PLAYERS = 2;
+
+    private Jugador otroJugador;
 
     public MapaNieve(int personaje) {
         this.personaje = personaje;
@@ -118,8 +120,13 @@ public class MapaNieve implements Screen, GameController {
             if (jugadorLocal != null) {
                 jugadorLocal.getPersonaje().entradas = jugadorLocal.getEntradas();
                 Gdx.input.setInputProcessor(jugadorLocal.getEntradas());
+                jugadorLocal.setClientThread(clientThread);
+                jugadorLocal.setEsLocal(true);
             }
         }
+
+        int otroIdx = (numPlayer == 1) ? 2 : 1;
+        otroJugador = playerManager.getJugador(otroIdx);
 
         partida = new Partida(
             playerManager.getJugador(1).getNombre(),
@@ -183,6 +190,18 @@ public class MapaNieve implements Screen, GameController {
         Render.batch.end();
 
         debugRenderer.render(world, cameraManager.getBox2D().combined);
+    }
+
+
+    @Override
+    public void updatePlayerState(int playerId, float x, float y, float velX, float velY, int dir) {
+        if (playerManager == null) return;
+        Jugador jugador = playerManager.getJugador(playerId);
+        if (jugador == null || jugador.getPersonaje() == null) return;
+
+        jugador.getPersonaje().setPosicion(x, y);
+        jugador.getPersonaje().setVelocidad(velX, velY);
+        jugador.getPersonaje().setDireccion(dir);
     }
 
     @Override

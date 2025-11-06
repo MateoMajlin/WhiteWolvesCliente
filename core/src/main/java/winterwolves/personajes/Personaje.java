@@ -1,7 +1,6 @@
 package winterwolves.personajes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,6 +14,7 @@ import winterwolves.items.Inventario;
 import winterwolves.items.Item;
 import winterwolves.personajes.habilidades.Habilidad;
 import winterwolves.personajes.armas.Arma;
+import winterwolves.network.ClientThread;
 
 public class Personaje extends Sprite implements Hudeable, Dañable {
 
@@ -48,11 +48,19 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     protected String nombreClase = "Personaje";
 
     public World world;
-
     public InventarioHud inventarioHud;
     public Hud hud;
     protected OrthographicCamera camaraHud;
     public EntradasJugador entradas;
+
+    // ==== CAMPOS NUEVOS PARA RED ====
+    private boolean esLocal = true;      // True si este personaje es controlado por el jugador local
+    private int playerNum = -1;          // Número asignado por el servidor
+    private ClientThread clientThread;   // Para enviar paquetes
+    private float tiempoSync = 0f;       // Limitador de frecuencia de envío
+    // ================================
+
+    private int kills = 0;
 
     public Personaje(World world, float x, float y, float ppm, OrthographicCamera camaraHud) {
         this.world = world;
@@ -63,7 +71,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         this.camaraHud = camaraHud;
         this.hud = new Hud(this,camaraHud);
         this.inventarioHud = new InventarioHud(this.inventario, camaraHud);
-        EntradasJugador entradas;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -86,6 +93,36 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         body.setUserData(this);
     }
 
+    // ==========================
+    // 🔌 CONFIGURACIÓN DE RED
+    // ==========================
+    public void configurarRed(ClientThread client, int playerNum, boolean esLocal) {
+        this.clientThread = client;
+        this.playerNum = playerNum;
+        this.esLocal = esLocal;
+    }
+
+    private void enviarMovimientoRed() {
+        if (clientThread == null || !esLocal) return;
+        tiempoSync += Gdx.graphics.getDeltaTime();
+        if (tiempoSync < 0.05f) return;
+        tiempoSync = 0f;
+
+        Vector2 pos = body.getPosition();
+        String msg = String.format("Move:%.2f:%.2f:%.2f:%.2f",
+            pos.x, pos.y, direccionMirando.x, direccionMirando.y);
+        clientThread.sendMessage(msg);
+    }
+
+    public void actualizarDesdeRed(float x, float y, float dirX, float dirY) {
+        if (esLocal) return;
+        body.setTransform(x, y, 0);
+        direccionMirando.set(dirX, dirY);
+    }
+
+    // ==========================
+    // INVENTARIO Y HUD
+    // ==========================
     public void toggleInventario() {
         if (inventarioHud == null) return;
         inventarioHud.toggle();
@@ -111,21 +148,27 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         }
     }
 
+    // ==========================
+    // DIBUJO PRINCIPAL
+    // ==========================
     @Override
     public void draw(Batch batch) {
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (habilidad1 != null) {
-            habilidad1.actualizar(delta);
-            if (entradas.isHabilidad1()) habilidad1.usar();
-        }
-        if (habilidad2 != null) {
-            habilidad2.actualizar(delta);
-            if (entradas.isHabilidad2()) habilidad2.usar();
-        }
+        if (esLocal) {
+            if (habilidad1 != null) {
+                habilidad1.actualizar(delta);
+                if (entradas.isHabilidad1()) habilidad1.usar();
+            }
+            if (habilidad2 != null) {
+                habilidad2.actualizar(delta);
+                if (entradas.isHabilidad2()) habilidad2.usar();
+            }
 
-        mover();
-        procesarHabilidades();
+            mover();
+            procesarHabilidades();
+            enviarMovimientoRed();
+        }
 
         Vector2 pos = body.getPosition();
         setPosition(pos.x * ppm - getWidth()/2, pos.y * ppm - getHeight()/2);
@@ -140,7 +183,7 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             float armaX = getX() + direccionMirando.x * desplazamiento;
             float armaY = getY() + direccionMirando.y * desplazamiento;
 
-            if (entradas.isGolpeBasico()) {
+            if (esLocal && entradas.isGolpeBasico()) {
                 armaBasica.atacar(armaX, armaY, direccionMirando, this);
             }
 
@@ -152,9 +195,11 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (habilidad2 != null) habilidad2.dibujar(batch, getX(), getY(), getWidth(), getHeight());
     }
 
-
+    // ==========================
+    // MOVIMIENTO Y HABILIDADES
+    // ==========================
     protected void mover() {
-        if (!puedeMoverse) {
+        if (!puedeMoverse || !esLocal) {
             body.setLinearVelocity(0,0);
             return;
         }
@@ -188,6 +233,9 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public void usarHabilidadEspecial() {}
     public void usarUltimate() {}
 
+    // ==========================
+    // GETTERS Y STATS
+    // ==========================
     public float getTiempoHabilidad1() { return habilidad1 != null ? habilidad1.getTiempoDesdeUltimoUso() : 0f; }
     public float getCooldownHabilidad1() { return habilidad1 != null ? habilidad1.getCooldown() : 0f; }
     public float getTiempoHabilidad2() { return habilidad2 != null ? habilidad2.getTiempoDesdeUltimoUso() : 0f; }
@@ -203,19 +251,10 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (vida < 0) vida = 0;
     }
 
-    public int getVidaMax() {
-        return this.vidaMax;
-    }
-
+    public int getVidaMax() { return this.vidaMax; }
     public float getAtaque() { return ataque; }
-    public float modifAtaque(float monto) {
-        return ataque += monto;
-    }
-
-    public float modifSpeedBase(float monto) {
-        return speedBase += monto;
-    }
-
+    public float modifAtaque(float monto) { return ataque += monto; }
+    public float modifSpeedBase(float monto) { return speedBase += monto; }
     public float getAtaqueMagico() { return ataqueMagico; }
     public float getDefensa() { return defensa; }
     public void setPuedeMoverse(boolean valor) { puedeMoverse = valor; }
@@ -246,7 +285,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         inventario.setItemEnSlot(item, slot);
     }
 
-
     public Item getSlot(int slot) {
         switch (slot) {
             case 0: return slotArma;
@@ -254,6 +292,22 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             case 2: return slotHabilidad2;
             default: return null;
         }
+    }
+
+    @Override
+    public void recibirDaño(float cantidad) {
+        this.vida -= cantidad;
+        if (vida <= 0) vida = 0;
+    }
+
+    public boolean estaMuerto() { return vida <= 0; }
+    public void incrementarKill() { kills++; }
+    public int getKills() { return kills; }
+
+    public void respawn(float x, float y) {
+        setVida(getVidaMax());
+        body.setTransform(x, y, 0);
+        setPuedeMoverse(true);
     }
 
 
@@ -264,35 +318,5 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (habilidad2 != null) habilidad2.dispose();
     }
 
-    @Override
-    public void recibirDaño(float cantidad) {
-        this.vida -= cantidad;
-        if (vida <= 0) {
-            vida = 0;
-        }
-    }
-
-    private int kills = 0;
-
-    public boolean estaMuerto() {
-        return vida <= 0;
-    }
-
-    public void incrementarKill() {
-        kills++;
-    }
-
-    public int getKills() {
-        return kills;
-    }
-
-    public void respawn(float x, float y) {
-        setVida(getVidaMax());
-        body.setTransform(x, y, 0);
-        setPuedeMoverse(true);
-    }
-
-    public int getPpm() {
-        return (int) ppm;
-    }
+    public int getPpm() { return (int) ppm; }
 }

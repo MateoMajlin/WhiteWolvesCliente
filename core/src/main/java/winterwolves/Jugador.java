@@ -1,14 +1,13 @@
 package winterwolves;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import winterwolves.io.EntradasJugador;
+import winterwolves.network.ClientThread;
 import winterwolves.personajes.Hud;
 import winterwolves.personajes.InventarioHud;
 import winterwolves.personajes.Personaje;
-import winterwolves.personajes.clases.Mago;
 
 public class Jugador {
 
@@ -25,7 +24,13 @@ public class Jugador {
     private String nombre;
     public EntradasJugador entradasJugador;
 
-    public Jugador(String nombre, World world, float x, float y, float ppm, OrthographicCamera camaraHud, Personaje personaje, int id) {
+    // 🔹 NUEVO: sincronización de red
+    private ClientThread clientThread;
+    private boolean esLocal = false;
+    private float tiempoEnvio = 0f; // para no saturar red
+
+    public Jugador(String nombre, World world, float x, float y, float ppm,
+                   OrthographicCamera camaraHud, Personaje personaje, int id) {
         this.nombre = nombre;
         this.world = world;
         this.ppm = ppm;
@@ -36,10 +41,6 @@ public class Jugador {
         this.hud = personaje.hud;
         this.inventarioHud = personaje.inventarioHud;
         this.id = id;
-    }
-
-    public void update() {
-        personaje.actualizarInventario();
     }
 
     public void draw(SpriteBatch batch) {
@@ -76,5 +77,18 @@ public class Jugador {
 
     public EntradasJugador getEntradas() {
         return entradas;
+    }
+
+    // 🔹 Métodos nuevos para red
+    public void setClientThread(ClientThread clientThread) {
+        this.clientThread = clientThread;
+    }
+
+    public void setEsLocal(boolean esLocal) {
+        this.esLocal = esLocal;
+    }
+
+    public boolean esLocal() {
+        return esLocal;
     }
 }

@@ -10,7 +10,7 @@ public class ClientThread extends Thread {
 
     private DatagramSocket socket;
     private int serverPort = 5555;
-    private String ipServerStr = "255.255.255.255"; // Broadcast o IP fija de tu servidor
+    private String ipServerStr = "255.255.255.255";
     private InetAddress ipServer;
     private boolean end = false;
     private GameController gameController;
@@ -70,7 +70,7 @@ public class ClientThread extends Thread {
                 break;
 
             case "Start":
-                // Formato: Start:<pj1,pj2,...>
+
                 if (parts.length > 1) {
                     String[] pjs = parts[1].split(",");
                     int[] personajesElegidos = new int[pjs.length];
@@ -83,30 +83,25 @@ public class ClientThread extends Thread {
                 }
                 break;
 
-            case "Move": // mensaje del servidor
-                if (parts.length < 4) return; // seguridad
+            case "MOVE":
+                if (parts.length < 4) return;
 
-                try {
-                    int playerId = Integer.parseInt(parts[1]);
-                    float dx = Float.parseFloat(parts[2]);
-                    float dy = Float.parseFloat(parts[3]);
+                String jugador = parts[1];
+                float x = Float.parseFloat(parts[2]);
+                float y = Float.parseFloat(parts[3]);
 
-                    Gdx.app.postRunnable(() -> {
-                        if (gameController.getPlayerManager() == null) return;
-                        Jugador jugador = gameController.getPlayerManager().getJugador(playerId);
-                        if (jugador == null) return;
-                        Personaje p = jugador.getPersonaje();
-                        if (p == null) return;
+                System.out.println("Moviendo " + jugador + " a (" + x + ", " + y + ")");
 
-
-                        p.setX(p.getX() + dx);
-                        p.setY(p.getY() + dy);
-                    });
-
-                } catch (NumberFormatException e) {
-                    System.err.println("[Cliente] Error al parsear MOVE: " + message);
-                }
+                Gdx.app.postRunnable(() -> {
+                    Jugador j = gameController.getPlayerManager().getJugador(Integer.parseInt(jugador));
+                    if (j != null && j.getPersonaje() != null) {
+//                        j.getPersonaje().moverVisualSegunServidor(x, y);
+                    } else {
+                        System.out.println("[Cliente] No se encontró personaje para " + jugador);
+                    }
+                });
                 break;
+
         }
     }
 

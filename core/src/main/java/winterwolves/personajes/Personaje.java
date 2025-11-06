@@ -54,10 +54,10 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public EntradasJugador entradas;
 
     // ==== CAMPOS NUEVOS PARA RED ====
-    private boolean esLocal = true;      // True si este personaje es controlado por el jugador local
-    private int playerNum = -1;          // Número asignado por el servidor
-    private ClientThread clientThread;   // Para enviar paquetes
-    private float tiempoSync = 0f;       // Limitador de frecuencia de envío
+    private boolean esLocal = true;
+    private int playerNum = -1;
+    private ClientThread clientThread;
+    private float tiempoSync = 0f;
     // ================================
 
     private int kills = 0;
@@ -233,9 +233,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public void usarHabilidadEspecial() {}
     public void usarUltimate() {}
 
-    // ==========================
-    // GETTERS Y STATS
-    // ==========================
     public float getTiempoHabilidad1() { return habilidad1 != null ? habilidad1.getTiempoDesdeUltimoUso() : 0f; }
     public float getCooldownHabilidad1() { return habilidad1 != null ? habilidad1.getCooldown() : 0f; }
     public float getTiempoHabilidad2() { return habilidad2 != null ? habilidad2.getTiempoDesdeUltimoUso() : 0f; }
@@ -317,6 +314,11 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (habilidad1 != null) habilidad1.dispose();
         if (habilidad2 != null) habilidad2.dispose();
     }
+
+    public void moverVisualSegunServidor(float x, float y) {
+        this.setPosition(x, y);
+    }
+
 
     public int getPpm() { return (int) ppm; }
 }

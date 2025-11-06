@@ -197,24 +197,28 @@ public class MapaNieve implements Screen, GameController {
         Render.batch.end();
 
         debugRenderer.render(world, cameraManager.getBox2D().combined);
+
     }
 
     public void update() {
         Jugador jugadorLocal = playerManager.getJugador(numPlayer);
-        float dx = 0, dy = 0;
-        float speed = 2.5f; // o la velocidad que uses
+        String dir = " ";
 
-        if (jugadorLocal.getEntradas().isArriba()) dy = speed;
-        if (jugadorLocal.getEntradas().isAbajo()) dy = -speed;
-        if (jugadorLocal.getEntradas().isIzquierda()) dx = -speed;
-        if (jugadorLocal.getEntradas().isDerecha()) dx = speed;
+        if (jugadorLocal.getEntradas().isArriba()) dir = "ARRIBA";
+        if (jugadorLocal.getEntradas().isAbajo()) dir = "ABAJO";
+        if (jugadorLocal.getEntradas().isIzquierda()) dir = "IZQUIERDA";
+        if (jugadorLocal.getEntradas().isDerecha()) dir = "DERECHA";
 
-        if (dx != 0 || dy != 0) {
-            String message = "MOVE:" + numPlayer + ":" + dx + ":" + dy;
+        if (!dir.isBlank()) {
+            String message = "MOVE:" + dir + ":" + numPlayer;
             clientThread.sendMessage(message);
         }
     }
 
+    public void moverVisualSegunServidor(float x, float y) {
+        playerManager.getJugador(1).getPersonaje().setPosition(x, y);
+        System.out.println("Sprite de red movido a: (" + x + ", " + y + ")");
+    }
 
     @Override
     public void resize(int width, int height) { cameraManager.resize(width, height); }

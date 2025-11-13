@@ -205,9 +205,10 @@ public class MapaNieve implements Screen, GameController {
         String dir = " ";
 
         if (jugadorLocal.getEntradas().isArriba()) dir = "ARRIBA";
-        if (jugadorLocal.getEntradas().isAbajo()) dir = "ABAJO";
-        if (jugadorLocal.getEntradas().isIzquierda()) dir = "IZQUIERDA";
-        if (jugadorLocal.getEntradas().isDerecha()) dir = "DERECHA";
+        else if (jugadorLocal.getEntradas().isAbajo()) dir = "ABAJO";
+        else if (jugadorLocal.getEntradas().isIzquierda()) dir = "IZQUIERDA";
+        else if (jugadorLocal.getEntradas().isDerecha()) dir = "DERECHA";
+        else {dir = "QUIETO";}
 
         if (!dir.isBlank()) {
             String message = "MOVE:" + dir + ":" + numPlayer;

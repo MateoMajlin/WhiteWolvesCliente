@@ -1,8 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WhiteWolvesLauncher" type="Application" factoryName="Application" singleton="false">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="winterwolves.principal.lwjgl3.Lwjgl3Launcher" />
     <module name="WhiteWolvesCliente.lwjgl3.main" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/assets" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WhiteWolvesCliente/assets" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="winterwolves.principal.lwjgl3.*" />

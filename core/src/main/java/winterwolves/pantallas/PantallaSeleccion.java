@@ -28,6 +28,9 @@ public class PantallaSeleccion implements Screen {
     private boolean personajeElegido = false;
     private boolean partidaIniciada = false;
 
+    // Aca no hago Getters y setters porque es una pantalla temporal.
+
+
     @Override
     public void show() {
         fondo = new Imagen("fondoSeleccion.png");

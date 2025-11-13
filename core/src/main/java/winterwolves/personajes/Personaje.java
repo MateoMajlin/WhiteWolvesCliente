@@ -55,6 +55,87 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
 
     // ==== CAMPOS NUEVOS PARA RED ====
     private boolean esLocal = true;
+
+    public float getSpeedBase() {
+        return speedBase;
+    }
+
+    public void setSpeedBase(float speedBase) {
+        this.speedBase = speedBase;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public float getMultiplicadorCorrer() {
+        return multiplicadorCorrer;
+    }
+
+    public void setMultiplicadorCorrer(float multiplicadorCorrer) {
+        this.multiplicadorCorrer = multiplicadorCorrer;
+    }
+
+    public void setPpm(float ppm) {
+        this.ppm = ppm;
+    }
+
+    public void setVidaMax(int vidaMax) {
+        this.vidaMax = vidaMax;
+    }
+
+    public void setAtaque(float ataque) {
+        this.ataque = ataque;
+    }
+
+    public void setAtaqueMagico(float ataqueMagico) {
+        this.ataqueMagico = ataqueMagico;
+    }
+
+    public void setDefensa(float defensa) {
+        this.defensa = defensa;
+    }
+
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+
+    public void setPlayerNum(int playerNum) {
+        this.playerNum = playerNum;
+    }
+
+    public boolean isEsLocal() {
+        return esLocal;
+    }
+
+    public void setEsLocal(boolean esLocal) {
+        this.esLocal = esLocal;
+    }
+
+    public float getTiempoSync() {
+        return tiempoSync;
+    }
+
+    public void setTiempoSync(float tiempoSync) {
+        this.tiempoSync = tiempoSync;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public int getPlayerNum() {
+        return playerNum;
+    }
+
     private int playerNum = -1;
     private ClientThread clientThread;
     private float tiempoSync = 0f;
@@ -148,9 +229,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         }
     }
 
-    // ==========================
-    // DIBUJO PRINCIPAL
-    // ==========================
     @Override
     public void draw(Batch batch) {
         float delta = Gdx.graphics.getDeltaTime();
@@ -203,7 +281,7 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             body.setLinearVelocity(0,0);
             return;
         }
-
+        //Falta enviar mensaje de movimiento
         float delta = Gdx.graphics.getDeltaTime();
         dash.update(delta, body, direccionMirando);
 
@@ -301,21 +379,24 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public void incrementarKill() { kills++; }
     public int getKills() { return kills; }
 
-    public void respawn(float x, float y) {
+    public void respawn(float x, float y)
+    {
         setVida(getVidaMax());
         body.setTransform(x, y, 0);
         setPuedeMoverse(true);
     }
 
 
-    public void dispose() {
+    public void dispose()
+    {
         animaciones.dispose();
         if (armaBasica != null) armaBasica.dispose();
         if (habilidad1 != null) habilidad1.dispose();
         if (habilidad2 != null) habilidad2.dispose();
     }
 
-    public void moverVisualSegunServidor(float x, float y) {
+    public void moverVisualSegunServidor(float x, float y)
+    {
         this.setPosition(x, y);
     }
 

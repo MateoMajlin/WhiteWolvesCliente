@@ -19,7 +19,36 @@ public class Jugador {
     private OrthographicCamera camaraHud;
     private World world;
     private float ppm;
+
     private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public float getPpm() {
+        return ppm;
+    }
+
+    public void setPpm(float ppm) {
+        this.ppm = ppm;
+    }
+
+    public boolean isEsLocal() {
+        return esLocal;
+    }
+
+    public float getTiempoEnvio() {
+        return tiempoEnvio;
+    }
+
+    public void setTiempoEnvio(float tiempoEnvio) {
+        this.tiempoEnvio = tiempoEnvio;
+    }
 
     private String nombre;
     public EntradasJugador entradasJugador;

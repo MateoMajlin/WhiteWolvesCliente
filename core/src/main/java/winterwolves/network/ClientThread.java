@@ -15,6 +15,38 @@ public class ClientThread extends Thread {
     private boolean end = false;
     private GameController gameController;
 
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public String getIpServerStr() {
+        return ipServerStr;
+    }
+
+    public void setIpServerStr(String ipServerStr) {
+        this.ipServerStr = ipServerStr;
+    }
+
+    public InetAddress getIpServer() {
+        return ipServer;
+    }
+
+    public void setIpServer(InetAddress ipServer) {
+        this.ipServer = ipServer;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    public void setEnd(boolean end) {
+        this.end = end;
+    }
+
     public ClientThread(GameController gameController) {
         try {
             this.gameController = gameController;
@@ -26,7 +58,7 @@ public class ClientThread extends Thread {
         }
     }
 
-    @Override
+    @Override //Sobre escribe el metodo run de la clase abstracta
     public void run() {
         System.out.println("[Cliente] Escuchando mensajes UDP...");
         do {

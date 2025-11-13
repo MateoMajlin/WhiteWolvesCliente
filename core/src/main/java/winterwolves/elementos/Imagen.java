@@ -9,6 +9,22 @@ public class Imagen {
     private Texture t;
     private Sprite s;
 
+    public Texture getT() {
+        return t;
+    }
+
+    public void setT(Texture t) {
+        this.t = t;
+    }
+
+    public Sprite getS() {
+        return s;
+    }
+
+    public void setS(Sprite s) {
+        this.s = s;
+    }
+
     public Imagen(String ruta) {
         t = new Texture(ruta);
         s = new Sprite(t);

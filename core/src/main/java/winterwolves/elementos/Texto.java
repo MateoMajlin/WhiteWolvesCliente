@@ -16,6 +16,22 @@ public class Texto {
     private String texto = "";
     GlyphLayout layout;
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public BitmapFont getFuente() {
+        return fuente;
+    }
+
+    public GlyphLayout getLayout() {
+        return layout;
+    }
+
     public Texto(String rutaFuente, int dimension, Color color, boolean sombra) {
         FreeTypeFontGenerator generador = new FreeTypeFontGenerator(Gdx.files.internal(rutaFuente));
         FreeTypeFontGenerator.FreeTypeFontParameter parametros = new FreeTypeFontGenerator.FreeTypeFontParameter();

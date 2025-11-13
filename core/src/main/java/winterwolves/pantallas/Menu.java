@@ -25,14 +25,46 @@ public class Menu implements Screen {
     int opc = 1;
     public float tiempo = 0;
 
+    public Entradas getEntradas() {
+        return entradas;
+    }
+
+    public void setEntradas(Entradas entradas) {
+        this.entradas = entradas;
+    }
+
+    public Texto getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(Texto titulo) {
+        this.titulo = titulo;
+    }
+
+    public int getOpc() {
+        return opc;
+    }
+
+    public void setOpc(int opc) {
+        this.opc = opc;
+    }
+
+    public float getTiempo() {
+        return tiempo;
+    }
+
+    public void setTiempo(float tiempo) {
+        this.tiempo = tiempo;
+    }
+
     @Override
     public void show() {
         fondo = new Imagen(Recursos.FONDO);
         fondo.escalar(Config.WIDTH,Config.HEIGTH);
         b = Render.batch;
-        cargarOpciones();
+        cargarOpciones();//carga opciones en pantalla
 
-        Gdx.input.setInputProcessor(entradas);
+        Gdx.input.setInputProcessor(entradas);//Abre el proceso a las entradas de teclado y luego de ello carga la pantalla principal
     }
 
     @Override

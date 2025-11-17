@@ -139,7 +139,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     private int playerNum = -1;
     private ClientThread clientThread;
     private float tiempoSync = 0f;
-    // ================================
 
     private int kills = 0;
 
@@ -174,9 +173,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         body.setUserData(this);
     }
 
-    // ==========================
-    // 🔌 CONFIGURACIÓN DE RED
-    // ==========================
     public void configurarRed(ClientThread client, int playerNum, boolean esLocal) {
         this.clientThread = client;
         this.playerNum = playerNum;
@@ -273,15 +269,11 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (habilidad2 != null) habilidad2.dibujar(batch, getX(), getY(), getWidth(), getHeight());
     }
 
-    // ==========================
-    // MOVIMIENTO Y HABILIDADES
-    // ==========================
     protected void mover() {
         if (!puedeMoverse || !esLocal) {
             body.setLinearVelocity(0,0);
             return;
         }
-        //Falta enviar mensaje de movimiento
         float delta = Gdx.graphics.getDeltaTime();
         dash.update(delta, body, direccionMirando);
 
@@ -400,6 +392,34 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         this.setPosition(x, y);
     }
 
+    public boolean canUseGolpe() {
+        return armaBasica != null && armaBasica.puedeAtacar();
+    }
+
+    public boolean canUseHabilidad1() {
+        return habilidad1 != null && habilidad1.puedeUsarse();
+    }
+
+    public boolean canUseHabilidad2() {
+        return habilidad2 != null && habilidad2.puedeUsarse();
+    }
+
+    public boolean canUseDash() {
+        return dash.getTiempoDesdeUltimo() >= dash.getCooldown();
+    }
+
 
     public int getPpm() { return (int) ppm; }
+
+    public Habilidad getHabilidad1() {
+        return habilidad1;
+    }
+
+    public Habilidad getHabilidad2() {
+        return habilidad2;
+    }
+
+    public Dash getDash() {
+        return dash;
+    }
 }

@@ -46,9 +46,8 @@ public class PlayerManager {
     }
 
     public void drawHud(Batch batch) {
-        for (Jugador j : jugadores) {
+            Jugador j = getJugador(1);
             j.drawHud(Render.batch);
-        }
     }
 
     public void toggleInventario() {

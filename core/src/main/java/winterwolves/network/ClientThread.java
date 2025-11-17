@@ -115,22 +115,22 @@ public class ClientThread extends Thread {
                 break;
 
             case "MOVE":
-                if (parts.length < 4) return;
-
-                String jugador = parts[1];
-                float x = Float.parseFloat(parts[2]);
-                float y = Float.parseFloat(parts[3]);
-
-                System.out.println("Moviendo " + jugador + " a (" + x + ", " + y + ")");
-
-                Gdx.app.postRunnable(() -> {
-                    Jugador j = gameController.getPlayerManager().getJugador(Integer.parseInt(jugador));
-                    if (j != null && j.getPersonaje() != null) {
-//                        j.getPersonaje().moverVisualSegunServidor(x, y);
-                    } else {
-                        System.out.println("[Cliente] No se encontró personaje para " + jugador);
-                    }
-                });
+//                if (parts.length < 4) return;
+//
+//                String jugador = parts[1];
+//                float x = Float.parseFloat(parts[2]);
+//                float y = Float.parseFloat(parts[3]);
+//
+//                System.out.println("Moviendo " + jugador + " a (" + x + ", " + y + ")");
+//
+//                Gdx.app.postRunnable(() -> {
+//                    Jugador j = gameController.getPlayerManager().getJugador(Integer.parseInt(jugador));
+//                    if (j != null && j.getPersonaje() != null) {
+////                        j.getPersonaje().moverVisualSegunServidor(x, y);
+//                    } else {
+//                        System.out.println("[Cliente] No se encontró personaje para " + jugador);
+//                    }
+//                });
                 break;
 
         }

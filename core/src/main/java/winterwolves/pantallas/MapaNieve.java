@@ -17,6 +17,7 @@ import winterwolves.elementos.Texto;
 import winterwolves.items.*;
 import winterwolves.network.ClientThread;
 import winterwolves.network.GameController;
+import winterwolves.personajes.Personaje;
 import winterwolves.props.*;
 import winterwolves.utilidades.*;
 
@@ -201,20 +202,86 @@ public class MapaNieve implements Screen, GameController {
     }
 
     public void update() {
+        enviarMovimiento();
+        enviarAccion();
+    }
+
+    private boolean accionEnviada = false;
+
+    private void enviarAccion() {
         Jugador jugadorLocal = playerManager.getJugador(numPlayer);
-        String dir = " ";
+        Personaje pj = jugadorLocal.getPersonaje();
 
-        if (jugadorLocal.getEntradas().isArriba()) dir = "ARRIBA";
-        else if (jugadorLocal.getEntradas().isAbajo()) dir = "ABAJO";
-        else if (jugadorLocal.getEntradas().isIzquierda()) dir = "IZQUIERDA";
-        else if (jugadorLocal.getEntradas().isDerecha()) dir = "DERECHA";
-        else {dir = "QUIETO";}
+        // Primero detectamos qué teclas está presionando
+        boolean golpe    = jugadorLocal.getEntradas().isGolpeBasico();
+        boolean hab1     = jugadorLocal.getEntradas().isHabilidad1();
+        boolean hab2     = jugadorLocal.getEntradas().isHabilidad2();
+        boolean dash     = jugadorLocal.getEntradas().isDash();
 
-        if (!dir.isBlank()) {
-            String message = "MOVE:" + dir + ":" + numPlayer;
-            clientThread.sendMessage(message);
+        // Ahora validamos SOLO si se puede usar realmente (cooldowns correctos)
+        String accion = null;
+
+        if (golpe && pj.getArma().puedeAtacar()) {
+            accion = "GOLPE";
+
+        } else if (hab1 && pj.getHabilidad1().puedeUsarse()) {
+            accion = "HAB1";
+
+        } else if (hab2 && pj.getHabilidad2().puedeUsarse()) {
+            accion = "HAB2";
+
+        } else if (dash && pj.getDash().getTiempoDesdeUltimo() >= pj.getDash().getCooldown()) {
+            accion = "DASH";
+        }
+
+        // Si hay acción válida Y no se mandó todavía → enviamos
+        if (accion != null && !accionEnviada) {
+            clientThread.sendMessage("ACCION:" + accion + ":" + numPlayer);
+            accionEnviada = true;
+        }
+
+        // Si NO hay ninguna acción válida, reset al latch
+        if (accion == null) {
+            accionEnviada = false;
         }
     }
+
+
+
+    private String ultimoMovimiento = "";
+    private String ultimaAccion = "";
+
+    private void enviarMovimiento() {
+        Jugador jugadorLocal = playerManager.getJugador(numPlayer);
+
+        boolean up    = jugadorLocal.getEntradas().isArriba();
+        boolean down  = jugadorLocal.getEntradas().isAbajo();
+        boolean left  = jugadorLocal.getEntradas().isIzquierda();
+        boolean right = jugadorLocal.getEntradas().isDerecha();
+
+        String dir;
+
+        // --- Movimientos diagonales ---
+        if (up && left)      dir = "ARRIBA_IZQUIERDA";
+        else if (up && right)  dir = "ARRIBA_DERECHA";
+        else if (down && left) dir = "ABAJO_IZQUIERDA";
+        else if (down && right) dir = "ABAJO_DERECHA";
+
+            // --- Movimientos simples ---
+        else if (up)          dir = "ARRIBA";
+        else if (down)        dir = "ABAJO";
+        else if (left)        dir = "IZQUIERDA";
+        else if (right)       dir = "DERECHA";
+
+        else dir = "QUIETO";
+
+        if (!dir.equals(ultimoMovimiento)) {
+            clientThread.sendMessage("MOVE:" + dir + ":" + numPlayer);
+            ultimoMovimiento = dir;
+        }
+    }
+
+
 
     public void moverVisualSegunServidor(float x, float y) {
         playerManager.getJugador(1).getPersonaje().setPosition(x, y);

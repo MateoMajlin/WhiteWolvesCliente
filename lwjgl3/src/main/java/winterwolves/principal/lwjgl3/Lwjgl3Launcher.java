@@ -18,7 +18,7 @@ public class Lwjgl3Launcher
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setTitle("WhiteWolves");
+        config.setTitle("WhiteWolvesClientes");
         config.useVsync(true);
         config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
         config.setWindowedMode(Config.WIDTH,Config.HEIGTH);

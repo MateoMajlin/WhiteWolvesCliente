@@ -95,7 +95,6 @@ public class ClientThread extends Thread {
                 break;
 
             case "Connected":
-                // Formato: Connected:<numJugador>
                 this.ipServer = packet.getAddress();
                 int playerNum = Integer.parseInt(parts[1]);
                 Gdx.app.postRunnable(() -> gameController.connect(playerNum));

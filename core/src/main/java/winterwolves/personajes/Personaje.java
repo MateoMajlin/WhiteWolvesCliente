@@ -152,54 +152,27 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         this.hud = new Hud(this,camaraHud);
         this.inventarioHud = new InventarioHud(this.inventario, camaraHud);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x, y);
-        body = world.createBody(bodyDef);
+//        BodyDef bodyDef = new BodyDef();
+//        bodyDef.type = BodyDef.BodyType.DynamicBody;
+//        bodyDef.position.set(x, y);
+//        body = world.createBody(bodyDef);
 
         setSize(30, 30);
-        float margen = 0.7f;
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getWidth()/2f * margen / ppm, getHeight()/2f * margen / ppm);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.restitution = 0f;
-        body.createFixture(fixtureDef);
-        shape.dispose();
-
-        body.setUserData(this);
+//        float margen = 0.7f;
+//        PolygonShape shape = new PolygonShape();
+//        shape.setAsBox(getWidth()/2f * margen / ppm, getHeight()/2f * margen / ppm);
+//
+//        FixtureDef fixtureDef = new FixtureDef();
+//        fixtureDef.shape = shape;
+//        fixtureDef.density = 1f;
+//        fixtureDef.friction = 0.2f;
+//        fixtureDef.restitution = 0f;
+//        body.createFixture(fixtureDef);
+//        shape.dispose();
+//
+//        body.setUserData(this);
     }
 
-    public void configurarRed(ClientThread client, int playerNum, boolean esLocal) {
-        this.clientThread = client;
-        this.playerNum = playerNum;
-        this.esLocal = esLocal;
-    }
-
-    private void enviarMovimientoRed() {
-        if (clientThread == null || !esLocal) return;
-        tiempoSync += Gdx.graphics.getDeltaTime();
-        if (tiempoSync < 0.05f) return;
-        tiempoSync = 0f;
-
-        Vector2 pos = body.getPosition();
-        String msg = String.format("Move:%.2f:%.2f:%.2f:%.2f",
-            pos.x, pos.y, direccionMirando.x, direccionMirando.y);
-        clientThread.sendMessage(msg);
-    }
-
-    public void actualizarDesdeRed(float x, float y, float dirX, float dirY) {
-        if (esLocal) return;
-        body.setTransform(x, y, 0);
-        direccionMirando.set(dirX, dirY);
-    }
-
-    // ==========================
-    // INVENTARIO Y HUD
-    // ==========================
     public void toggleInventario() {
         if (inventarioHud == null) return;
         inventarioHud.toggle();
@@ -239,13 +212,12 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
                 if (entradas.isHabilidad2()) habilidad2.usar();
             }
 
-            mover();
+//            mover();
             procesarHabilidades();
-            enviarMovimientoRed();
         }
 
-        Vector2 pos = body.getPosition();
-        setPosition(pos.x * ppm - getWidth()/2, pos.y * ppm - getHeight()/2);
+//        Vector2 pos = body.getPosition();
+//        setPosition(pos.x * ppm - getWidth()/2, pos.y * ppm - getHeight()/2);
 
         TextureRegion frame = (!puedeMoverse)
             ? animaciones.getIdleFrame(direccionMirando)
@@ -269,29 +241,29 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         if (habilidad2 != null) habilidad2.dibujar(batch, getX(), getY(), getWidth(), getHeight());
     }
 
-    protected void mover() {
-        if (!puedeMoverse || !esLocal) {
-            body.setLinearVelocity(0,0);
-            return;
-        }
-        float delta = Gdx.graphics.getDeltaTime();
-        dash.update(delta, body, direccionMirando);
-
-        if (entradas.isDash() && dash.intentarActivar(direccionMirando)) return;
-        if (dash.isActivo()) return;
-
-        movimiento.set(0,0);
-        speed = entradas.isCorrer() ? speedBase * multiplicadorCorrer : speedBase;
-
-        if (entradas.isArriba()) movimiento.y = 1;
-        if (entradas.isAbajo()) movimiento.y = -1;
-        if (entradas.isIzquierda()) movimiento.x = -1;
-        if (entradas.isDerecha()) movimiento.x = 1;
-
-        if (movimiento.len() > 0) direccionMirando.set(movimiento).nor();
-        movimiento.nor().scl(speed);
-        body.setLinearVelocity(movimiento.x, movimiento.y);
-    }
+//    protected void mover() {
+//        if (!puedeMoverse || !esLocal) {
+//            body.setLinearVelocity(0,0);
+//            return;
+//        }
+//        float delta = Gdx.graphics.getDeltaTime();
+//        dash.update(delta, body, direccionMirando);
+//
+//        if (entradas.isDash() && dash.intentarActivar(direccionMirando)) return;
+//        if (dash.isActivo()) return;
+//
+//        movimiento.set(0,0);
+//        speed = entradas.isCorrer() ? speedBase * multiplicadorCorrer : speedBase;
+//
+//        if (entradas.isArriba()) movimiento.y = 1;
+//        if (entradas.isAbajo()) movimiento.y = -1;
+//        if (entradas.isIzquierda()) movimiento.x = -1;
+//        if (entradas.isDerecha()) movimiento.x = 1;
+//
+//        if (movimiento.len() > 0) direccionMirando.set(movimiento).nor();
+//        movimiento.nor().scl(speed);
+//        body.setLinearVelocity(movimiento.x, movimiento.y);
+//    }
 
     protected void procesarHabilidades() {
         if (entradas.isGolpeBasico()) usarHabilidadBasica();
@@ -422,4 +394,13 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public Dash getDash() {
         return dash;
     }
+
+    // en Personaje.java
+    public void updatePosition(float x, float y) {
+
+        float pixelX = x * ppm - getWidth() / 2f;
+        float pixelY = y * ppm - getHeight() / 2f;
+        setPosition(pixelX, pixelY);
+    }
+
 }

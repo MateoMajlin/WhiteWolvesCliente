@@ -7,6 +7,8 @@ public interface GameController {
     void start(int[] personajesElegidos);
 
     PlayerManager getPlayerManager();
+
+    void updatePlayersPosition(float x, float y, int jugador);
 }
 
 

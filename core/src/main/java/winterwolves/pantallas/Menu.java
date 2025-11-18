@@ -18,7 +18,7 @@ public class Menu implements Screen {
 
     Texto titulo;
     Texto opciones[] = new Texto[5];
-    String textosOpc[] = {"Nueva Partida","Opciones","Creditos","¿Como Jugar?", "Salir"};
+    String textosOpc[] = {"Jugar en LAN","Opciones","Creditos","¿Como Jugar?", "Salir"};
 
     Entradas entradas = new Entradas(this);
 

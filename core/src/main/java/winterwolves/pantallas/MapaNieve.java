@@ -145,6 +145,11 @@ public class MapaNieve implements Screen, GameController {
         return playerManager;
     }
 
+    @Override
+    public void updatePlayersPosition(float x, float y, int jugador) {
+        playerManager.getJugador(jugador).getPersonaje().updatePosition(x,y);
+    }
+
 
     @Override
     public void render(float delta) {
@@ -279,13 +284,6 @@ public class MapaNieve implements Screen, GameController {
             clientThread.sendMessage("MOVE:" + dir + ":" + numPlayer);
             ultimoMovimiento = dir;
         }
-    }
-
-
-
-    public void moverVisualSegunServidor(float x, float y) {
-        playerManager.getJugador(1).getPersonaje().setPosition(x, y);
-        System.out.println("Sprite de red movido a: (" + x + ", " + y + ")");
     }
 
     @Override

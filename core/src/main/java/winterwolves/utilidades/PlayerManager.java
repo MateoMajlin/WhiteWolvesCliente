@@ -54,11 +54,8 @@ public class PlayerManager {
         jugadores[0].toggleInventario();
     }
 
-    /**
-     * Devuelve el jugador según el índice del servidor (1 o 2)
-     */
     public Jugador getJugador(int serverIndex) {
-        int arrayIndex = serverIndex - 1; // normalizamos
+        int arrayIndex = serverIndex - 1;
         if (arrayIndex >= 0 && arrayIndex < NUM_JUGADORES) {
             return jugadores[arrayIndex];
         }

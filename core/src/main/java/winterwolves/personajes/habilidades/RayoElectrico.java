@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import java.util.*;
 import com.badlogic.gdx.utils.Timer;
+
+import java.util.*;
+
 import winterwolves.personajes.Personaje;
 
 public class RayoElectrico extends Habilidad {
@@ -21,13 +22,14 @@ public class RayoElectrico extends Habilidad {
 
     private static final Map<DireccionUtil.Direccion, Vector2> startOffsets = new HashMap<>();
     static {
-        startOffsets.put(DireccionUtil.Direccion.UP, new Vector2(0, 40));
-        startOffsets.put(DireccionUtil.Direccion.DOWN, new Vector2(0, -40));
-        startOffsets.put(DireccionUtil.Direccion.LEFT, new Vector2(-40, 0));
-        startOffsets.put(DireccionUtil.Direccion.RIGHT, new Vector2(40, 0));
-        startOffsets.put(DireccionUtil.Direccion.UP_LEFT, new Vector2(-28, 28));
-        startOffsets.put(DireccionUtil.Direccion.UP_RIGHT, new Vector2(28, 28));
-        startOffsets.put(DireccionUtil.Direccion.DOWN_LEFT, new Vector2(-28, -28));
+        startOffsets.put(DireccionUtil.Direccion.UP,         new Vector2(0, 40));
+        startOffsets.put(DireccionUtil.Direccion.DOWN,       new Vector2(0, -40));
+        startOffsets.put(DireccionUtil.Direccion.LEFT,       new Vector2(-40, 0));
+        startOffsets.put(DireccionUtil.Direccion.RIGHT,      new Vector2(40, 0));
+
+        startOffsets.put(DireccionUtil.Direccion.UP_LEFT,    new Vector2(-28, 28));
+        startOffsets.put(DireccionUtil.Direccion.UP_RIGHT,   new Vector2(28, 28));
+        startOffsets.put(DireccionUtil.Direccion.DOWN_LEFT,  new Vector2(-28, -28));
         startOffsets.put(DireccionUtil.Direccion.DOWN_RIGHT, new Vector2(28, -28));
     }
 
@@ -43,11 +45,12 @@ public class RayoElectrico extends Habilidad {
         hitboxOffsets.put(DireccionUtil.Direccion.DOWN_RIGHT, new Vector2(50, -50));
     }
 
+
     public RayoElectrico(float duracion, float cooldown, int daño) {
         super(duracion, cooldown);
         this.daño = daño;
 
-        textura = new Texture("rayo.png"); // tu imagen 1024x128 con 4 frames
+        textura = new Texture("rayo.png"); // 1024x128
         int anchoFrame = 256;
         int altoFrame = 128;
 
@@ -59,14 +62,13 @@ public class RayoElectrico extends Habilidad {
         animacionRayo = new Animation<>(0.06f, frames);
     }
 
-
     @Override
     protected void iniciarEfecto() {
-        // Inmovilizar personaje
+
+        // Inmovilizar personaje por estética
         personaje.setPuedeMoverse(false);
 
-        // Liberar movimiento después de 0.5 segundos
-        Timer.schedule(new Timer.Task(){
+        Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 personaje.setPuedeMoverse(true);
@@ -74,8 +76,8 @@ public class RayoElectrico extends Habilidad {
         }, 0.5f);
 
         Vector2 centro = new Vector2(
-            personaje.body.getPosition().x * personaje.ppm,
-            personaje.body.getPosition().y * personaje.ppm
+            personaje.getX() + personaje.getWidth() / 2f,
+            personaje.getY() + personaje.getHeight() / 2f
         );
 
         Vector2 dir = new Vector2(personaje.direccionMirando).nor();
@@ -87,7 +89,6 @@ public class RayoElectrico extends Habilidad {
         Vector2 pos = centro.cpy().add(offsetVisual);
 
         proyectiles.add(new ProyectilRayo(
-            personaje.world,
             pos,
             dir,
             velocidad,
@@ -110,18 +111,22 @@ public class RayoElectrico extends Habilidad {
         while (it.hasNext()) {
             ProyectilRayo p = it.next();
             p.actualizar(delta);
-            if (p.estaMuerto()) {
-                p.destruir(personaje.world);
-                it.remove();
-            }
+//            if (p.estaMuerto()) {
+//                it.remove();
+//            }
+        }
+    }
+
+
+    @Override
+    public void dibujar(Batch batch, float x, float y, float width, float height) {
+        for (ProyectilRayo p : proyectiles) {
+            p.dibujar(batch);
         }
     }
 
     @Override
-    public void dibujar(Batch batch, float x, float y, float width, float height) {
-        for (ProyectilRayo p : proyectiles) p.dibujar(batch);
+    public void dispose() {
+        textura.dispose();
     }
-
-    @Override
-    public void dispose() { textura.dispose(); }
 }

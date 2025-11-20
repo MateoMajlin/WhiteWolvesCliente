@@ -29,18 +29,6 @@ public class BolaDeFuego extends Habilidad {
         startOffsets.put(DireccionUtil.Direccion.DOWN_RIGHT, new Vector2(-15, -30));
     }
 
-    private static final Map<DireccionUtil.Direccion, Vector2> hitboxOffsets = new HashMap<>();
-    static {
-        hitboxOffsets.put(DireccionUtil.Direccion.UP, new Vector2(0, 10));
-        hitboxOffsets.put(DireccionUtil.Direccion.DOWN, new Vector2(0, -10));
-        hitboxOffsets.put(DireccionUtil.Direccion.LEFT, new Vector2(-10, 0));
-        hitboxOffsets.put(DireccionUtil.Direccion.RIGHT, new Vector2(10, 0));
-        hitboxOffsets.put(DireccionUtil.Direccion.UP_LEFT, new Vector2(-5, 5));
-        hitboxOffsets.put(DireccionUtil.Direccion.UP_RIGHT, new Vector2(5, 5));
-        hitboxOffsets.put(DireccionUtil.Direccion.DOWN_LEFT, new Vector2(-5, -5));
-        hitboxOffsets.put(DireccionUtil.Direccion.DOWN_RIGHT, new Vector2(5, -5));
-    }
-
     public BolaDeFuego(float duracion, float cooldown, int daño) {
         super(duracion, cooldown);
         this.daño = daño;
@@ -54,11 +42,13 @@ public class BolaDeFuego extends Habilidad {
 
         TextureRegion[] frames = new TextureRegion[5];
         for (int i = 0; i < 5; i++) {
-            frames[i] = new TextureRegion(textura,
+            frames[i] = new TextureRegion(
+                textura,
                 offsetX + i * anchoFrame,
                 offsetY,
                 anchoFrame,
-                altoFrame);
+                altoFrame
+            );
         }
 
         animacionBola = new Animation<>(0.08f, frames);
@@ -66,11 +56,10 @@ public class BolaDeFuego extends Habilidad {
 
     @Override
     protected void iniciarEfecto() {
-        // Bloquear al personaje medio segundo
-        personaje.setPuedeMoverse(false);
-        final float stunDuracion = 0.5f; // medio segundo
 
-        // Programar desbloqueo usando un Timer
+        personaje.setPuedeMoverse(false);
+        final float stunDuracion = 0.5f;
+
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -78,21 +67,22 @@ public class BolaDeFuego extends Habilidad {
             }
         }, stunDuracion);
 
+
         Vector2 centro = new Vector2(
-            personaje.body.getPosition().x * personaje.ppm,
-            personaje.body.getPosition().y * personaje.ppm
+            personaje.getPosition().x,
+            personaje.getPosition().y
         );
+
 
         Vector2 dir = new Vector2(personaje.direccionMirando).nor();
         DireccionUtil.Direccion direccionEnum = DireccionUtil.vectorADireccion(dir);
 
         Vector2 offsetVisual = startOffsets.getOrDefault(direccionEnum, new Vector2(0, 0));
-        Vector2 offsetHitbox = hitboxOffsets.getOrDefault(direccionEnum, new Vector2(0, 0));
 
         Vector2 pos = centro.cpy().add(dir.cpy().scl(40f));
 
+        // Nuevo constructor sin Box2D ni hitbox offset
         proyectiles.add(new Proyectil(
-            personaje.world,
             pos,
             dir,
             velocidad,
@@ -101,11 +91,9 @@ public class BolaDeFuego extends Habilidad {
             duracion,
             personaje,
             direccionEnum,
-            offsetVisual,
-            offsetHitbox
+            offsetVisual
         ));
     }
-
 
     @Override
     protected void finalizarEfecto() {}
@@ -119,7 +107,6 @@ public class BolaDeFuego extends Habilidad {
             Proyectil p = it.next();
             p.actualizar(delta);
             if (p.estaMuerto()) {
-                p.destruir(personaje.world);
                 it.remove();
             }
         }
@@ -127,9 +114,13 @@ public class BolaDeFuego extends Habilidad {
 
     @Override
     public void dibujar(Batch batch, float x, float y, float width, float height) {
-        for (Proyectil p : proyectiles) p.dibujar(batch);
+        for (Proyectil p : proyectiles) {
+            p.dibujar(batch);
+        }
     }
 
     @Override
-    public void dispose() { textura.dispose(); }
+    public void dispose() {
+        textura.dispose();
+    }
 }

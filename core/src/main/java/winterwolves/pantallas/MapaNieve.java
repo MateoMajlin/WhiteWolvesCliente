@@ -146,8 +146,9 @@ public class MapaNieve implements Screen, GameController {
     }
 
     @Override
-    public void updatePlayersPosition(float x, float y, int jugador) {
+    public void updatePlayersPosition(float x, float y,String dirMirando,int jugador) {
         playerManager.getJugador(jugador).getPersonaje().updatePosition(x,y);
+        playerManager.getJugador(jugador).getPersonaje().updateDirMirando(dirMirando);
     }
 
 

@@ -117,8 +117,9 @@ public class ClientThread extends Thread {
             case "UPDATE_POSITION":
                 float x = Float.parseFloat(parts[1]);
                 float y = Float.parseFloat(parts[2]);
-                int jugador = Integer.parseInt(parts[3]);
-                Gdx.app.postRunnable(() -> gameController.updatePlayersPosition(x,y,jugador));
+                String dirMirando = parts[3];
+                int jugador = Integer.parseInt(parts[4]);
+                Gdx.app.postRunnable(() -> gameController.updatePlayersPosition(x,y,dirMirando,jugador));
                 break;
 
         }

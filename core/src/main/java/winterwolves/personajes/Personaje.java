@@ -53,7 +53,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     protected OrthographicCamera camaraHud;
     public EntradasJugador entradas;
 
-    // ==== CAMPOS NUEVOS PARA RED ====
     private boolean esLocal = true;
 
     public float getSpeedBase() {
@@ -213,7 +212,7 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             }
 
 //            mover();
-            procesarHabilidades();
+//            procesarHabilidades();
         }
 
 //        Vector2 pos = body.getPosition();
@@ -265,15 +264,15 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
 //        body.setLinearVelocity(movimiento.x, movimiento.y);
 //    }
 
-    protected void procesarHabilidades() {
-        if (entradas.isGolpeBasico()) usarHabilidadBasica();
-        if (entradas.isHabilidad1()) usarHabilidadEspecial();
-        if (entradas.isHabilidad2()) usarUltimate();
-    }
-
-    public void usarHabilidadBasica() {}
-    public void usarHabilidadEspecial() {}
-    public void usarUltimate() {}
+//    protected void procesarHabilidades() {
+//        if (entradas.isGolpeBasico()) usarHabilidadBasica();
+//        if (entradas.isHabilidad1()) usarHabilidadEspecial();
+//        if (entradas.isHabilidad2()) usarUltimate();
+//    }
+//
+//    public void usarHabilidadBasica() {}
+//    public void usarHabilidadEspecial() {}
+//    public void usarUltimate() {}
 
     public float getTiempoHabilidad1() { return habilidad1 != null ? habilidad1.getTiempoDesdeUltimoUso() : 0f; }
     public float getCooldownHabilidad1() { return habilidad1 != null ? habilidad1.getCooldown() : 0f; }
@@ -395,12 +394,62 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
         return dash;
     }
 
-    // en Personaje.java
     public void updatePosition(float x, float y) {
-
         float pixelX = x * ppm - getWidth() / 2f;
         float pixelY = y * ppm - getHeight() / 2f;
         setPosition(pixelX, pixelY);
+    }
+
+    public void updateDirMirando(String direccion) {
+        if (direccion == null) return;
+
+        switch (direccion.toUpperCase()) {
+
+            case "ARRIBA":
+                direccionMirando.set(0, 1);
+                break;
+
+            case "ABAJO":
+                direccionMirando.set(0, -1);
+                break;
+
+            case "IZQUIERDA":
+                direccionMirando.set(-1, 0);
+                break;
+
+            case "DERECHA":
+                direccionMirando.set(1, 0);
+                break;
+
+            case "ARRIBA_DERECHA":
+                direccionMirando.set(1, 1).nor();
+                break;
+
+            case "ARRIBA_IZQUIERDA":
+                direccionMirando.set(-1, 1).nor();
+                break;
+
+            case "ABAJO_DERECHA":
+                direccionMirando.set(1, -1).nor();
+                break;
+
+            case "ABAJO_IZQUIERDA":
+                direccionMirando.set(-1, -1).nor();
+                break;
+
+            case "QUIETO":
+            default:
+                direccionMirando.set(0, 0);
+                break;
+        }
+    }
+
+
+    public Vector2 getPosition() {
+        return new Vector2(
+            getX() + getWidth() / 2f,
+            getY() + getHeight() / 2f
+        );
     }
 
 }

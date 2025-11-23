@@ -9,6 +9,8 @@ public interface GameController {
     PlayerManager getPlayerManager();
 
     void updatePlayersPosition(float x, float y,String dirMirando,int jugador);
+
+    void updatePlayersVida(int vida, int jugador);
 }
 
 

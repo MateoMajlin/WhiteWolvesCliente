@@ -5,14 +5,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 import winterwolves.Jugador;
+import winterwolves.pantallas.MapaNieve;
 import winterwolves.personajes.Personaje;
 
 public class PlayerManager {
 
     private final int NUM_JUGADORES = 2;
     private Jugador[] jugadores = new Jugador[NUM_JUGADORES];
+    MapaNieve mapaNieve;
 
-    public PlayerManager(World world, int[] personajesElegidosIdx, float PPM, OrthographicCamera camaraHud) {
+    public PlayerManager(World world, int[] personajesElegidosIdx, float PPM, OrthographicCamera camaraHud, MapaNieve mapaNieve) {
+
+        this.mapaNieve = mapaNieve;
 
         Personaje[] personajes = new Personaje[NUM_JUGADORES];
 
@@ -46,9 +50,12 @@ public class PlayerManager {
     }
 
     public void drawHud(Batch batch) {
-            Jugador j = getJugador(1);
+        if (mapaNieve == null) return;
+        Jugador j = getJugador(mapaNieve.getNumPlayer());
+        if (j != null)
             j.drawHud(Render.batch);
     }
+
 
     public void toggleInventario() {
         jugadores[0].toggleInventario();

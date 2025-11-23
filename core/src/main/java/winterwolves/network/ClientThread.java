@@ -80,6 +80,7 @@ public class ClientThread extends Thread {
     private void processMessage(DatagramPacket packet) {
         String message = new String(packet.getData(), 0, packet.getLength()).trim();
         String[] parts = message.split(":");
+        int jugador;
 
         System.out.println("[Cliente] Mensaje recibido: " + message);
 
@@ -118,10 +119,14 @@ public class ClientThread extends Thread {
                 float x = Float.parseFloat(parts[1]);
                 float y = Float.parseFloat(parts[2]);
                 String dirMirando = parts[3];
-                int jugador = Integer.parseInt(parts[4]);
+                jugador = Integer.parseInt(parts[4]);
                 Gdx.app.postRunnable(() -> gameController.updatePlayersPosition(x,y,dirMirando,jugador));
                 break;
 
+            case "UPDATE_VIDA":
+                int vida = Integer.parseInt(parts[1]);
+                jugador = Integer.parseInt(parts[2]);
+                Gdx.app.postRunnable(() -> gameController.updatePlayersVida(vida,jugador));
         }
     }
 

@@ -342,14 +342,6 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
     public void incrementarKill() { kills++; }
     public int getKills() { return kills; }
 
-    public void respawn(float x, float y)
-    {
-        setVida(getVidaMax());
-        body.setTransform(x, y, 0);
-        setPuedeMoverse(true);
-    }
-
-
     public void dispose()
     {
         animaciones.dispose();
@@ -451,5 +443,4 @@ public class Personaje extends Sprite implements Hudeable, Dañable {
             getY() + getHeight() / 2f
         );
     }
-
 }

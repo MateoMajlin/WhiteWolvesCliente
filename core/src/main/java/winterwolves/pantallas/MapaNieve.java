@@ -116,7 +116,7 @@ public class MapaNieve implements Screen, GameController {
     public void start(int[] personajesElegidos) {
         System.out.println("Creando PlayerManager con personajes: " + personajesElegidos[0] + ", " + personajesElegidos[1]);
 
-        playerManager = new PlayerManager(world, personajesElegidos, PPM, cameraManager.getHud());
+        playerManager = new PlayerManager(world, personajesElegidos, PPM, cameraManager.getHud(),this);
 
         if (numPlayer >= 1) {
             Jugador jugadorLocal = playerManager.getJugador(numPlayer);
@@ -152,6 +152,11 @@ public class MapaNieve implements Screen, GameController {
     public void updatePlayersPosition(float x, float y,String dirMirando,int jugador) {
         playerManager.getJugador(jugador).getPersonaje().updatePosition(x,y);
         playerManager.getJugador(jugador).getPersonaje().updateDirMirando(dirMirando);
+    }
+
+    @Override
+    public void updatePlayersVida(int vida, int jugador) {
+        playerManager.getJugador(jugador).getPersonaje().setVida(vida);
     }
 
 
@@ -282,6 +287,10 @@ public class MapaNieve implements Screen, GameController {
             clientThread.sendMessage("MOVE:" + dir + ":" + numPlayer);
             ultimoMovimiento = dir;
         }
+    }
+
+    public int getNumPlayer() {
+        return numPlayer;
     }
 
     @Override

@@ -42,12 +42,10 @@ public class Partida {
         if (pj1.estaMuerto() && !pj1YaContado) {
             pj2.incrementarKill();
             pj1YaContado = true;
-            pj1.respawn(4f, 2f);
         }
         if (pj2.estaMuerto() && !pj2YaContado) {
             pj1.incrementarKill();
             pj2YaContado = true;
-            pj2.respawn(21f, 10f);
         }
 
         if (!pj1.estaMuerto()) pj1YaContado = false;

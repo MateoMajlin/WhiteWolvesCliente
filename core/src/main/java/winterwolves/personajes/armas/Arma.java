@@ -22,7 +22,7 @@ public class Arma {
     protected Texture hoja;
 
     protected World world;
-    protected Body body;
+//    protected Body body;
     protected float ppm;
     protected float daño;
     protected float multiplicadorDaño = 1f;
@@ -68,20 +68,18 @@ public class Arma {
 
         if (activo) {
             stateTime += delta;
-            if (body != null) body.setTransform(x / ppm, y / ppm, 0);
+//            if (body != null) body.setTransform(x / ppm, y / ppm, 0);
 
             if (animacion != null && animacion.isAnimationFinished(stateTime)) {
                 activo = false;
-                if (body != null) {
-                    world.destroyBody(body);
-                    body = null;
-                }
+//                if (body != null) {
+//                    world.destroyBody(body);
+//                    body = null;
+//                }
                 multiplicadorDaño = 1f;
 
-                // ⚡ liberar control de movimiento al propietario
                 if (propietario != null) propietario.setPuedeMoverse(true);
 
-                // ⚡ resetear propietario para la próxima activación
                 propietario = null;
             }
         }
@@ -93,26 +91,26 @@ public class Arma {
             stateTime = 0;
             tiempoDesdeUltimoGolpe = 0f;
 
-            HitboxConfig cfg = hitboxes.get(dir);
-            if (cfg == null) return;
-
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.DynamicBody;
-            bodyDef.position.set(x / ppm, y / ppm);
-            body = world.createBody(bodyDef);
-
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(cfg.ancho / 2 / ppm, cfg.alto / 2 / ppm,
-                new Vector2(cfg.offsetX / ppm, cfg.offsetY / ppm),
-                (float) Math.toRadians(cfg.angleDeg));
-
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.isSensor = true;
-            body.createFixture(fixtureDef).setUserData(this);
-
-            shape.dispose();
-            body.setUserData(this);
+//            HitboxConfig cfg = hitboxes.get(dir);
+//            if (cfg == null) return;
+//
+//            BodyDef bodyDef = new BodyDef();
+//            bodyDef.type = BodyDef.BodyType.DynamicBody;
+//            bodyDef.position.set(x / ppm, y / ppm);
+//            body = world.createBody(bodyDef);
+//
+//            PolygonShape shape = new PolygonShape();
+//            shape.setAsBox(cfg.ancho / 2 / ppm, cfg.alto / 2 / ppm,
+//                new Vector2(cfg.offsetX / ppm, cfg.offsetY / ppm),
+//                (float) Math.toRadians(cfg.angleDeg));
+//
+//            FixtureDef fixtureDef = new FixtureDef();
+//            fixtureDef.shape = shape;
+//            fixtureDef.isSensor = true;
+//            body.createFixture(fixtureDef).setUserData(this);
+//
+//            shape.dispose();
+//            body.setUserData(this);
         }
     }
 

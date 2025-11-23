@@ -131,6 +131,9 @@ public class MapaNieve implements Screen, GameController {
         int otroIdx = (numPlayer == 1) ? 2 : 1;
         otroJugador = playerManager.getJugador(otroIdx);
 
+        playerManager.getJugador(1).getPersonaje().updatePosition(4f,2.5f);
+        playerManager.getJugador(2).getPersonaje().updatePosition(21f,10f);
+
         partida = new Partida(
             playerManager.getJugador(1).getNombre(),
             playerManager.getJugador(1).getPersonaje(),
@@ -218,13 +221,11 @@ public class MapaNieve implements Screen, GameController {
         Jugador jugadorLocal = playerManager.getJugador(numPlayer);
         Personaje pj = jugadorLocal.getPersonaje();
 
-        // Primero detectamos qué teclas está presionando
         boolean golpe    = jugadorLocal.getEntradas().isGolpeBasico();
         boolean hab1     = jugadorLocal.getEntradas().isHabilidad1();
         boolean hab2     = jugadorLocal.getEntradas().isHabilidad2();
         boolean dash     = jugadorLocal.getEntradas().isDash();
 
-        // Ahora validamos SOLO si se puede usar realmente (cooldowns correctos)
         String accion = null;
 
         if (golpe && pj.getArma().puedeAtacar()) {
@@ -240,13 +241,11 @@ public class MapaNieve implements Screen, GameController {
             accion = "DASH";
         }
 
-        // Si hay acción válida Y no se mandó todavía → enviamos
         if (accion != null && !accionEnviada) {
             clientThread.sendMessage("ACCION:" + accion + ":" + numPlayer);
             accionEnviada = true;
         }
 
-        // Si NO hay ninguna acción válida, reset al latch
         if (accion == null) {
             accionEnviada = false;
         }
@@ -267,13 +266,11 @@ public class MapaNieve implements Screen, GameController {
 
         String dir;
 
-        // --- Movimientos diagonales ---
         if (up && left)      dir = "ARRIBA_IZQUIERDA";
         else if (up && right)  dir = "ARRIBA_DERECHA";
         else if (down && left) dir = "ABAJO_IZQUIERDA";
         else if (down && right) dir = "ABAJO_DERECHA";
 
-            // --- Movimientos simples ---
         else if (up)          dir = "ARRIBA";
         else if (down)        dir = "ABAJO";
         else if (left)        dir = "IZQUIERDA";

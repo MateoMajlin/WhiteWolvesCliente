@@ -34,6 +34,14 @@ public class PlayerManager {
 
         for (int i = 0; i < NUM_JUGADORES; i++) {
             jugadores[i] = new Jugador("Jugador " + (i+1), world, 450 / PPM, 450 / PPM, PPM, camaraHud, personajes[i], i + 1);
+
+            if (i + 1 == mapaNieve.getNumPlayer()) {
+                jugadores[i].setEsLocal(true);
+            } else {
+                jugadores[i].setEsLocal(false);
+            }
+
+            jugadores[i].getPersonaje().setEsLocal(jugadores[i].esLocal());
         }
     }
 

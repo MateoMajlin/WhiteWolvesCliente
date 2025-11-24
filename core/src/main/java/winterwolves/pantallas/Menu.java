@@ -13,58 +13,27 @@ import winterwolves.utilidades.Render;
 
 public class Menu implements Screen {
 
-    Imagen fondo;
+    Imagen fondo,mashoop;
     SpriteBatch b;
 
     Texto titulo;
-    Texto opciones[] = new Texto[5];
-    String textosOpc[] = {"Jugar en LAN","Opciones","Creditos","¿Como Jugar?", "Salir"};
+    Texto opciones[] = new Texto[2];
+    String textosOpc[] = {"Jugar en LAN","Salir"};
 
     Entradas entradas = new Entradas(this);
 
     int opc = 1;
     public float tiempo = 0;
 
-    public Entradas getEntradas() {
-        return entradas;
-    }
-
-    public void setEntradas(Entradas entradas) {
-        this.entradas = entradas;
-    }
-
-    public Texto getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(Texto titulo) {
-        this.titulo = titulo;
-    }
-
-    public int getOpc() {
-        return opc;
-    }
-
-    public void setOpc(int opc) {
-        this.opc = opc;
-    }
-
-    public float getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(float tiempo) {
-        this.tiempo = tiempo;
-    }
-
     @Override
     public void show() {
         fondo = new Imagen(Recursos.FONDO);
         fondo.escalar(Config.WIDTH,Config.HEIGTH);
+        mashoop = new Imagen(Recursos.MASHOOP);
+        mashoop.setPosition(-50,0);
         b = Render.batch;
-        cargarOpciones();//carga opciones en pantalla
-
-        Gdx.input.setInputProcessor(entradas);//Abre el proceso a las entradas de teclado y luego de ello carga la pantalla principal
+        cargarOpciones();
+        Gdx.input.setInputProcessor(entradas);
     }
 
     @Override
@@ -119,10 +88,7 @@ public class Menu implements Screen {
                 Recursos.musica.dispose();
                 Render.app.setScreen(new PantallaSeleccion());
                 break;
-            case 4:
-                Render.app.setScreen(new PantallaTutorial());
-                break;
-            case 5:
+            case 2:
                 Gdx.app.exit();
                 break;
         }
@@ -131,6 +97,7 @@ public class Menu implements Screen {
     private void dibujar() {
         b.begin();
         fondo.dibujar();
+        mashoop.dibujar();
         titulo.dibujar();
         for (Texto t : opciones) {
             t.dibujar();

@@ -60,10 +60,13 @@ public class Principal extends Game {
 
     @Override
     public void dispose() {
-        //Mando mensaje de cierre, para lograr desconexion.
-        // clientThread.sendMessage("Disconnect:"+ new String(1));
-        Render.batch.dispose();
+        super.dispose();
 
+        if (getScreen() != null) {
+            getScreen().dispose();
+        }
+
+        Render.batch.dispose();
     }
 
     private void setearMusica() {

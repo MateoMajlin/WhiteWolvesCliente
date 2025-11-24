@@ -115,6 +115,10 @@ public class ClientThread extends Thread {
                 }
                 break;
 
+            case "Disconnect":
+                Gdx.app.postRunnable(() -> gameController.volverAlMenu());
+                break;
+
             case "UPDATE_POSITION":
                 float x = Float.parseFloat(parts[1]);
                 float y = Float.parseFloat(parts[2]);
@@ -143,11 +147,13 @@ public class ClientThread extends Thread {
     }
 
     public void terminate() {
+        sendMessage("Disconnect");
         this.end = true;
         if (socket != null && !socket.isClosed()) {
             socket.close();
         }
         this.interrupt();
         System.out.println("[Cliente] Hilo de cliente terminado.");
+
     }
 }

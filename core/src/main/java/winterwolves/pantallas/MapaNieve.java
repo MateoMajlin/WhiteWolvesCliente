@@ -139,7 +139,7 @@ public class MapaNieve implements Screen, GameController {
             playerManager.getJugador(1).getPersonaje(),
             playerManager.getJugador(2).getNombre(),
             playerManager.getJugador(2).getPersonaje(),
-            120f
+            60f
         );
     }
 
@@ -157,6 +157,12 @@ public class MapaNieve implements Screen, GameController {
     @Override
     public void updatePlayersVida(int vida, int jugador) {
         playerManager.getJugador(jugador).getPersonaje().setVida(vida);
+    }
+
+    @Override
+    public void volverAlMenu() {
+        this.clientThread.terminate();
+        Render.app.setScreen(new Menu());
     }
 
 

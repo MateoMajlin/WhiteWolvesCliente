@@ -22,14 +22,6 @@ public class Jugador {
 
     private int id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public float getPpm() {
         return ppm;
     }
@@ -38,25 +30,12 @@ public class Jugador {
         this.ppm = ppm;
     }
 
-    public boolean isEsLocal() {
-        return esLocal;
-    }
-
-    public float getTiempoEnvio() {
-        return tiempoEnvio;
-    }
-
-    public void setTiempoEnvio(float tiempoEnvio) {
-        this.tiempoEnvio = tiempoEnvio;
-    }
-
     private String nombre;
     public EntradasJugador entradasJugador;
 
-    // 🔹 NUEVO: sincronización de red
+
     private ClientThread clientThread;
     private boolean esLocal = false;
-    private float tiempoEnvio = 0f; // para no saturar red
 
     public Jugador(String nombre, World world, float x, float y, float ppm,
                    OrthographicCamera camaraHud, Personaje personaje, int id) {
@@ -92,10 +71,6 @@ public class Jugador {
         return nombre;
     }
 
-    public void setNombre(String nuevoNombre) {
-        this.nombre = nuevoNombre;
-    }
-
     public void toggleInventario() {
         personaje.toggleInventario();
     }
@@ -108,7 +83,6 @@ public class Jugador {
         return entradas;
     }
 
-    // 🔹 Métodos nuevos para red
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
     }

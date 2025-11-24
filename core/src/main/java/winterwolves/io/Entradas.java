@@ -10,26 +10,6 @@ public class Entradas implements InputProcessor {
     private boolean abajo = false, arriba = false;
     private boolean enter = false;
 
-    public void setAbajo(boolean abajo) {
-        this.abajo = abajo;
-    }
-
-    public void setArriba(boolean arriba) {
-        this.arriba = arriba;
-    }
-
-    public void setEnter(boolean enter) {
-        this.enter = enter;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public PantallaTutorial getPantallaTutorial() {
-        return pantallaTutorial;
-    }
-
     Menu menu;
     PantallaTutorial pantallaTutorial;
 

@@ -74,7 +74,6 @@ public class Caja extends Sprite implements Dañable {
         }
     }
 
-    // === Vida ===
     public void recibirDaño(float cantidad) {
         if (!activa) return;
 
@@ -85,14 +84,6 @@ public class Caja extends Sprite implements Dañable {
             vida = 0;
             destruir();
         }
-    }
-
-    public float getVida() {
-        return vida;
-    }
-
-    public float getVidaMax() {
-        return vidaMax;
     }
 
     public void drawVidaTexto(Batch batch) {
@@ -133,10 +124,6 @@ public class Caja extends Sprite implements Dañable {
             body = null;
         }
         activa = false;
-    }
-
-    public Body getBody() {
-        return body;
     }
 
     public void dispose() {

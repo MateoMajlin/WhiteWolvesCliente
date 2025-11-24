@@ -52,7 +52,6 @@ public class CameraManager {
         camaraHud.update();
     }
 
-    // Getters
     public OrthographicCamera getPrincipal() {
         return camaraPrincipal;
     }

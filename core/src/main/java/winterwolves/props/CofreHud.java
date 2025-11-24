@@ -142,7 +142,6 @@ public class CofreHud {
 
         shapeRenderer.end();
 
-        // --- Dibujar ítems sobre las casillas
         batch.begin();
         for (int i = 0; i < casillasPersonaje.length; i++) {
             Item item = inventarioPersonaje.getItem(i);

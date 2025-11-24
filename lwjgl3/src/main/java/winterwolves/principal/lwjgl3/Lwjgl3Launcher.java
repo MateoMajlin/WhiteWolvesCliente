@@ -8,7 +8,7 @@ import winterwolves.utilidades.Config;
 public class Lwjgl3Launcher
 {
     public static void main(String[] args) {
-        if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
+        if (StartupHelper.startNewJvmIfRequired()) return;
         createApplication();
     }
 
@@ -22,8 +22,6 @@ public class Lwjgl3Launcher
         config.useVsync(true);
         config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
         config.setWindowedMode(Config.WIDTH,Config.HEIGTH);
-        // config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-        // Lo pone en fullscreen pero abria que reescalar las imagenes
         config.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return config;
     }

@@ -20,8 +20,8 @@ public abstract class Item {
     public TextureRegion getTextura() { return textura; }
 
 
-    public abstract Habilidad crearHabilidad();      // retorna la habilidad que provee el item
-    public abstract Arma crearArma(World world, float ppm); // retorna el arma que provee el item
+    public abstract Habilidad crearHabilidad();
+    public abstract Arma crearArma(World world, float ppm);
 
     public abstract String getDescripcion();
 }

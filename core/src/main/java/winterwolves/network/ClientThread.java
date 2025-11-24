@@ -119,6 +119,10 @@ public class ClientThread extends Thread {
                 Gdx.app.postRunnable(() -> gameController.volverAlMenu());
                 break;
 
+            case "CancelarPartida":
+                Gdx.app.postRunnable(() -> gameController.ganadorPorDefault());
+                break;
+
             case "UPDATE_POSITION":
                 float x = Float.parseFloat(parts[1]);
                 float y = Float.parseFloat(parts[2]);

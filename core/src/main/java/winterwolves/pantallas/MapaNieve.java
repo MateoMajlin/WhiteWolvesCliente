@@ -144,11 +144,6 @@ public class MapaNieve implements Screen, GameController {
     }
 
     @Override
-    public PlayerManager getPlayerManager() {
-        return playerManager;
-    }
-
-    @Override
     public void updatePlayersPosition(float x, float y,String dirMirando,int jugador) {
         playerManager.getJugador(jugador).getPersonaje().updatePosition(x,y);
         playerManager.getJugador(jugador).getPersonaje().updateDirMirando(dirMirando);
@@ -163,6 +158,12 @@ public class MapaNieve implements Screen, GameController {
     public void volverAlMenu() {
         this.clientThread.terminate();
         Render.app.setScreen(new Menu());
+    }
+
+    @Override
+    public void ganadorPorDefault() {
+        partida.forzarFinal = true;
+        partida.victoriaPorDefault();
     }
 
 

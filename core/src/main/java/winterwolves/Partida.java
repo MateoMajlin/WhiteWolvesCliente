@@ -18,6 +18,8 @@ public class Partida {
     private Texto textoGanador;
     private Texto textoJugador1, textoJugador2, textoTiempo;
 
+    public boolean forzarFinal = false;
+
     public Partida(String nombrePj1, Personaje pj1,
                    String nombrePj2, Personaje pj2,
                    float duracionSegundos) {
@@ -50,6 +52,11 @@ public class Partida {
 
         if (!pj1.estaMuerto()) pj1YaContado = false;
         if (!pj2.estaMuerto()) pj2YaContado = false;
+
+
+        if(forzarFinal) {
+            victoriaPorDefault();
+        }
 
         if (tiempoRestante <= 0) {
             finalizarPartida();
@@ -99,5 +106,13 @@ public class Partida {
 
     public float getTiempoRestante() {
         return tiempoRestante;
+    }
+
+    public void victoriaPorDefault() {
+        textoGanador = new Texto(Recursos.FUENTEMENU, 50, Color.RED, true);
+        textoGanador.setTexto("Ganaste por Default");
+        textoGanador.centrar();
+        partidaFinalizada = true;
+        forzarFinal = false;
     }
 }

@@ -66,7 +66,7 @@ public class PlayerManager {
 
 
     public void toggleInventario() {
-        jugadores[0].toggleInventario();
+        jugadores[mapaNieve.numPlayer-1].toggleInventario();
     }
 
     public Jugador getJugador(int serverIndex) {

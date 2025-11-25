@@ -203,6 +203,10 @@ public class MapaNieve implements Screen, GameController {
         cofre.draw(Render.batch);
         Render.batch.end();
 
+        if(playerManager.getJugador(numPlayer).getEntradas().isToggle()) {
+            playerManager.toggleInventario();
+        }
+
         renderer.render(capasDelanteras);
 
         // HUD
